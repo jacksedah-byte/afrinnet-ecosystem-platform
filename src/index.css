@@ -1,0 +1,306 @@
+/* DO NOT CHANGE */
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+/* DO NOT CHANGE */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* CHANGE VALUES FOR THEME — AFRINNET Foundation brand tokens */
+:root {
+  --radius: 0.625rem;
+  --background: #080b0a;
+  --foreground: #f5f7f5;
+  --card: #101a16;
+  --card-foreground: #f5f7f5;
+  --popover: #101a16;
+  --popover-foreground: #f5f7f5;
+  --primary: #16a34a;
+  --primary-foreground: #04130a;
+  --secondary: #18365b;
+  --secondary-foreground: #f5f7f5;
+  --muted: #141c18;
+  --muted-foreground: #a5aea9;
+  --accent: #16201b;
+  --accent-foreground: #f5f7f5;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: rgba(240, 244, 241, 0.1);
+  --input: rgba(240, 244, 241, 0.2);
+  --ring: #16a34a;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: #16a34a;
+}
+
+/* AFRINNET brand palette + typography (extends the block above) */
+@theme {
+  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Open Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-obsidian: #080b0a;
+  --color-ink: #101a16;
+  --color-ink-deep: #0b1210;
+  --color-navy: #18365b;
+  --color-navy-deep: #112743;
+  --color-innovation: #16a34a;
+  --color-innovation-bright: #22c55e;
+  --color-mist: #f0f4f1;
+  --color-chalk: #f5f7f5;
+  --color-ash: #a5aea9;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-body);
+    background-color: var(--background);
+    color: var(--foreground);
+    overflow-x: hidden;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: rgba(22, 163, 74, 0.35);
+    color: #f5f7f5;
+  }
+  :focus-visible {
+    outline: 2px solid #16a34a;
+    outline-offset: 2px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   AFRINNET utilities: grid textures, network animations, helpers
+   ------------------------------------------------------------------ */
+@layer utilities {
+  .afr-grid-bg {
+    background-image: linear-gradient(rgba(240, 244, 241, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240, 244, 241, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .afr-dot-bg {
+    background-image: radial-gradient(rgba(240, 244, 241, 0.12) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .afr-mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+  .afr-mask-fade {
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 45%, transparent 78%);
+    mask-image: radial-gradient(ellipse at center, #000 45%, transparent 78%);
+  }
+  .afr-eyebrow {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+}
+
+/* Network animation keyframes (transform/opacity only) */
+@keyframes afr-node-in {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes afr-line-draw {
+  from {
+    stroke-dashoffset: var(--afr-dash, 600);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes afr-pulse {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes afr-flow {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+@keyframes afr-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes afr-sweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.afr-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: afr-node-in 0.6s ease-out both;
+}
+
+.afr-line {
+  stroke-dasharray: var(--afr-dash, 600);
+  animation: afr-line-draw 1.4s ease-out both;
+}
+
+.afr-pulse {
+  animation: afr-pulse 3.4s ease-in-out infinite;
+}
+
+.afr-flow {
+  stroke-dasharray: 6 14;
+  animation: afr-flow 1.6s linear infinite;
+}
+
+.afr-float {
+  animation: afr-float 6s ease-in-out infinite;
+}
+
+/* Reduced motion: static hero, no parallax, no loops */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .afr-node,
+  .afr-line,
+  .afr-pulse,
+  .afr-flow,
+  .afr-float {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
