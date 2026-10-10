@@ -145,8 +145,7 @@ export default function Partnerships() {
                     text: "The partnership runs, with review points agreed up front.",
                   },
                 ].map((step, i) => (
-                  <Reveal key={step.title} delay={i * 0.07}>
-                    <li className="flex gap-4">
+                  <Reveal key={step.title} delay={i * 0.07} as="li" className="flex gap-4">
                       <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-innovation/60 bg-obsidian font-display text-xs font-bold text-innovation">
                         {i + 1}
                       </span>
@@ -156,7 +155,6 @@ export default function Partnerships() {
                         </h3>
                         <p className="mt-1 text-sm leading-6 text-ash">{step.text}</p>
                       </div>
-                    </li>
                   </Reveal>
                 ))}
               </ol>

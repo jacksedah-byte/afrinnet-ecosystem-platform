@@ -128,8 +128,12 @@ export default function ServicePage() {
               </h2>
               <ol className="mt-6 space-y-5">
                 {service.steps.map((step, i) => (
-                  <Reveal key={step.title} delay={i * 0.07}>
-                    <li className="relative flex gap-5 pl-1">
+                  <Reveal
+                    key={step.title}
+                    delay={i * 0.07}
+                    as="li"
+                    className="relative flex gap-5 pl-1"
+                  >
                       <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-innovation/60 bg-obsidian font-display text-xs font-bold text-innovation">
                         {i + 1}
                       </span>
@@ -139,7 +143,6 @@ export default function ServicePage() {
                         </h3>
                         <p className="mt-1 text-sm leading-6 text-ash">{step.text}</p>
                       </div>
-                    </li>
                   </Reveal>
                 ))}
               </ol>

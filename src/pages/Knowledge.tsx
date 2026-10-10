@@ -10,7 +10,6 @@ import {
   resources,
   type Resource,
 } from "@/content/resources";
-import { cn } from "@/lib/utils";
 
 const TYPES = [
   "All types",
@@ -130,7 +129,7 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
       </PageHeader>
 
       {/* Filters */}
-      <section className="sticky top-16 z-30 border-b border-white/10 bg-obsidian/95 py-4 backdrop-blur sm:top-[72px]">
+      <section className="sticky top-16 z-30 border-b border-white/10 bg-obsidian/95 py-4 backdrop-blur-md xl:top-[72px]">
         <Container>
           <div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_auto]">
             <label className="relative block">

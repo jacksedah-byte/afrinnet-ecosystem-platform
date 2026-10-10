@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
@@ -6,7 +7,7 @@ type Doc = "privacy" | "terms" | "accessibility";
 
 interface Section {
   heading: string;
-  paragraphs: string[];
+  paragraphs?: string[];
   list?: string[];
 }
 
@@ -237,7 +238,7 @@ export default function Legal({ doc }: { doc: Doc }) {
                   </div>
 
                   <div className="mt-4 space-y-4 pl-0 sm:pl-10">
-                    {section.paragraphs.map((p, pi) => (
+                    {section.paragraphs?.map((p, pi) => (
                       <p key={pi} className="text-base leading-7 text-obsidian/75">
                         {p}
                       </p>
@@ -279,17 +280,17 @@ export default function Legal({ doc }: { doc: Doc }) {
         <Container>
           <Callout tone="neutral" className="mx-auto max-w-3xl">
             Related:{" "}
-            <a href="/privacy" className="font-semibold text-innovation underline-offset-4 hover:underline">
+            <Link to="/privacy" className="font-semibold text-innovation underline-offset-4 hover:underline">
               privacy policy
-            </a>
+            </Link>
             ,{" "}
-            <a href="/terms" className="font-semibold text-innovation underline-offset-4 hover:underline">
+            <Link to="/terms" className="font-semibold text-innovation underline-offset-4 hover:underline">
               terms of use
-            </a>
+            </Link>
             ,{" "}
-            <a href="/accessibility" className="font-semibold text-innovation underline-offset-4 hover:underline">
+            <Link to="/accessibility" className="font-semibold text-innovation underline-offset-4 hover:underline">
               accessibility statement
-            </a>
+            </Link>
             .
           </Callout>
         </Container>

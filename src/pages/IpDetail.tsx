@@ -105,13 +105,11 @@ export default function IpDetail() {
               </p>
               <ol className="mt-5 space-y-4">
                 {type.nextSteps.map((step, i) => (
-                  <Reveal key={step} delay={i * 0.06}>
-                    <li className="flex gap-4">
+                  <Reveal key={step} delay={i * 0.06} as="li" className="flex gap-4">
                       <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-innovation/60 bg-obsidian font-display text-xs font-bold text-innovation">
                         {i + 1}
                       </span>
                       <p className="pt-1 text-sm leading-6 text-chalk/90">{step}</p>
-                    </li>
                   </Reveal>
                 ))}
               </ol>

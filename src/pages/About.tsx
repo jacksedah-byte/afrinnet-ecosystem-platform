@@ -127,10 +127,9 @@ export default function About() {
 
           <ol className="mt-10 grid gap-6 md:grid-cols-5">
             {timeline.map((item, i) => (
-              <Reveal key={item.title} delay={i * 0.08}>
-                <li className="relative h-full border-t border-white/12 pt-5">
+              <Reveal key={item.title} delay={i * 0.08} as="li" className="relative h-full border-t border-white/12 pt-5">
                   <span
-                    className="absolute -top-1 left-0 h-px w-full bg-gradient-to-r from-innovation to-transparent"
+                    className="absolute -top-1 left-0 h-px w-full bg-linear-to-r from-innovation to-transparent"
                     aria-hidden="true"
                   />
                   <span className="font-display text-[0.65rem] font-bold uppercase tracking-[0.2em] text-innovation">
@@ -140,7 +139,6 @@ export default function About() {
                     {item.title}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-ash">{item.text}</p>
-                </li>
               </Reveal>
             ))}
           </ol>

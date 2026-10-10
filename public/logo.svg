@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 96.81 96.81"><rect width="96.81" height="96.81" rx="18"/><g fill="#fff"><rect x="24.67" y="24.67" width="47.47" height="11.87"/><rect x="24.67" y="36.54" width="11.87" height="35.61"/><rect x="40.06" y="39.98" width="23.74" height="11.87"/><rect x="40.06" y="51.85" width="11.87" height="20.3"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 40 40">
+  <!-- AFRINNET logo placeholder — clearly replaceable, not an official mark. -->
+  <rect width="40" height="40" rx="10" fill="#0B1210"/>
+  <rect x="0.75" y="0.75" width="38.5" height="38.5" rx="10.5" fill="none" stroke="#16A34A" stroke-opacity="0.55" stroke-width="1.5"/>
+  <path d="M10.5 30.5 L20 10 L29.5 30.5" fill="none" stroke="#F0F4F1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15 23 H25" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="20" cy="10" r="2.6" fill="#16A34A"/>
+  <circle cx="10.5" cy="30.5" r="2.2" fill="#F0F4F1"/>
+  <circle cx="29.5" cy="30.5" r="2.2" fill="#F0F4F1"/>
+  <circle cx="15" cy="23" r="1.4" fill="#16A34A"/>
+  <circle cx="25" cy="23" r="1.4" fill="#16A34A"/>
+</svg>

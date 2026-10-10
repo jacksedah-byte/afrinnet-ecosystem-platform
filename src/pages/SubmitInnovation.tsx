@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router";
 import {
   AlertTriangle,
@@ -150,30 +150,27 @@ export default function SubmitInnovation() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [reference, setReference] = useState<string | null>(null);
-  const [savedNote, setSavedNote] = useState(false);
 
-  const set = <K extends keyof DraftState>(key: K, value: DraftState[K]) => {
-    setState((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => {
-      if (!prev[key]) return prev;
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-  };
-
-  // Save-and-resume: draft persists on this device only.
-  useEffect(() => {
-    if (reference) return;
+  /** Save-and-resume: the draft persists on this device only. */
+  const persist = (next: DraftState) => {
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(state));
-      setSavedNote(true);
-      const t = setTimeout(() => setSavedNote(false), 2200);
-      return () => clearTimeout(t);
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(next));
     } catch {
       /* storage unavailable — the form still works without drafts */
     }
-  }, [state, reference]);
+  };
+
+  const set = <K extends keyof DraftState>(key: K, value: DraftState[K]) => {
+    const next = { ...state, [key]: value };
+    setState(next);
+    if (!reference) persist(next);
+    setErrors((prev) => {
+      if (!prev[key]) return prev;
+      const rest = { ...prev };
+      delete rest[key];
+      return rest;
+    });
+  };
 
   const validateStep = (index: number): Record<string, string> => {
     const next: Record<string, string> = {};
@@ -372,7 +369,7 @@ export default function SubmitInnovation() {
           <StatusBadge tone="available">Submissions open</StatusBadge>
           <span className="flex items-center gap-1.5 text-xs text-ash">
             <Save className="size-3.5" aria-hidden="true" />
-            {savedNote ? "Draft saved on this device" : "Draft saves automatically on this device"}
+            Drafts save automatically on this device
           </span>
         </div>
       </PageHeader>

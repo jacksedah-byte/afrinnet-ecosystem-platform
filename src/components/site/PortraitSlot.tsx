@@ -26,7 +26,7 @@ export function PortraitSlot({
             ? `Portrait of ${name} — professional photograph pending approval`
             : note
         }
-        className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-white/20 bg-gradient-to-b from-ink to-obsidian"
+        className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-white/20 bg-linear-to-b from-ink to-obsidian"
       >
         {/* Faint network texture */}
         <svg

@@ -85,7 +85,7 @@ export function KnowledgePreview() {
           <Reveal>
             <article className="group h-full overflow-hidden rounded-2xl border border-white/10 bg-obsidian transition-colors duration-300 hover:border-innovation/50">
               {/* Cover preview */}
-              <div className="relative aspect-[16/10] overflow-hidden border-b border-white/10 bg-gradient-to-br from-navy via-navy-deep to-obsidian p-7">
+              <div className="relative aspect-[16/10] overflow-hidden border-b border-white/10 bg-linear-to-br from-navy via-navy-deep to-obsidian p-7">
                 <div aria-hidden="true" className="absolute inset-0 afr-grid-bg opacity-70" />
                 <svg
                   aria-hidden="true"

@@ -1,11 +1,11 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "AFRINNET Foundation",
+  "short_name": "AFRINNET",
+  "description": "African innovation network — discovery, intellectual property support and institutional partnerships.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#080B0A",
+  "theme_color": "#080B0A",
   "icons": [
     {
       "src": "/logo.svg",

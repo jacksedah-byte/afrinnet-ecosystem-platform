@@ -29,7 +29,7 @@ export function Hero() {
         className="pointer-events-none absolute -right-32 top-10 size-[480px] rounded-full bg-innovation/10 blur-3xl"
       />
 
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[55%_45%] lg:gap-8">
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
         {/* Left: message */}
         <motion.div
           initial={staticMode ? false : "hidden"}

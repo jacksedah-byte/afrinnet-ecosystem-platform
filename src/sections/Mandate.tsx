@@ -31,8 +31,7 @@ export function Mandate() {
           {/* Principles */}
           <ul className="space-y-8">
             {mandate.principles.map((principle, i) => (
-              <Reveal key={principle.title} delay={i * 0.12}>
-                <li className="flex gap-6 border-t border-white/10 pt-7">
+              <Reveal key={principle.title} delay={i * 0.12} as="li" className="flex gap-6 border-t border-white/10 pt-7">
                   <span className="font-display text-sm font-bold tracking-[0.14em] text-innovation">
                     {principle.number}
                   </span>
@@ -44,7 +43,6 @@ export function Mandate() {
                       {principle.text}
                     </p>
                   </div>
-                </li>
               </Reveal>
             ))}
           </ul>

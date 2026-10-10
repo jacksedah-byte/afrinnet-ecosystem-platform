@@ -132,6 +132,7 @@ export const navGroups: NavGroup[] = [
         title: "Take action",
         links: [
           { label: "Submit an Innovation", href: "/submit", blurb: "Guided, confidential-first submission" },
+          { label: "Register an Institution", href: "/contact?type=institution", blurb: "Add your school, TVET, university or agency to the network" },
           { label: "Become an Institutional Partner", href: "/partnerships", blurb: "Partner with AFRINNET" },
           { label: "Request IP Support", href: "/request-ip-support", blurb: "Guidance, clinics and referrals" },
         ],

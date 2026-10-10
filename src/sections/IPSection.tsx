@@ -81,7 +81,7 @@ export function IPSection() {
                   <span className="rounded-full border border-white/15 bg-obsidian px-4 py-2 font-display text-xs font-semibold uppercase tracking-[0.16em] text-chalk">
                     The idea
                   </span>
-                  <span className="h-px flex-1 bg-gradient-to-r from-white/20 to-innovation/50" aria-hidden="true" />
+                  <span className="h-px flex-1 bg-linear-to-r from-white/20 to-innovation/50" aria-hidden="true" />
                   <span className="font-display text-xs font-semibold uppercase tracking-[0.16em] text-innovation">
                     Pathway
                   </span>
@@ -90,13 +90,12 @@ export function IPSection() {
                 <ol className="relative mt-7 space-y-5 pl-9">
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-6 left-[15px] top-3 w-px bg-gradient-to-b from-innovation via-innovation/60 to-transparent"
+                    className="absolute bottom-6 left-[15px] top-3 w-px bg-linear-to-b from-innovation via-innovation/60 to-transparent"
                   />
                   {PATHWAY.map((step, i) => {
                     const Icon = step.icon;
                     return (
-                      <Reveal key={step.title} delay={0.15 + i * 0.12}>
-                        <li className="relative">
+                      <Reveal key={step.title} delay={0.15 + i * 0.12} as="li" className="relative">
                           <span className="absolute -left-9 top-1 flex size-[30px] items-center justify-center rounded-full border border-innovation/50 bg-obsidian text-innovation">
                             <Icon className="size-4" aria-hidden="true" />
                           </span>
@@ -113,7 +112,6 @@ export function IPSection() {
                               {step.text}
                             </p>
                           </div>
-                        </li>
                       </Reveal>
                     );
                   })}

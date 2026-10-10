@@ -49,8 +49,12 @@ export default function MissionVision() {
 
           <ol className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {missionVision.objectives.map((obj, i) => (
-              <Reveal key={obj.title} delay={(i % 3) * 0.08}>
-                <li className="h-full rounded-xl border border-white/10 bg-ink/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-innovation/60">
+              <Reveal
+                key={obj.title}
+                delay={(i % 3) * 0.08}
+                as="li"
+                className="h-full rounded-xl border border-white/10 bg-ink/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-innovation/60"
+              >
                   <span className="font-display text-sm font-bold tracking-[0.16em] text-innovation">
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -58,7 +62,6 @@ export default function MissionVision() {
                     {obj.title}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-ash">{obj.text}</p>
-                </li>
               </Reveal>
             ))}
           </ol>

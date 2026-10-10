@@ -118,8 +118,12 @@ export default function IpServices() {
 
             <ol className="grid gap-4 sm:grid-cols-2">
               {ipOverview.pathways.map((step, i) => (
-                <Reveal key={step.title} delay={(i % 2) * 0.08}>
-                  <li className="h-full rounded-xl border border-white/10 bg-obsidian/70 p-5">
+                <Reveal
+                  key={step.title}
+                  delay={(i % 2) * 0.08}
+                  as="li"
+                  className="h-full rounded-xl border border-white/10 bg-obsidian/70 p-5"
+                >
                     <span className="font-display text-sm font-bold tracking-[0.16em] text-innovation">
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -127,8 +131,7 @@ export default function IpServices() {
                       {step.title}
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-ash">{step.text}</p>
-                  </li>
-                </Reveal>
+                  </Reveal>
               ))}
             </ol>
           </div>

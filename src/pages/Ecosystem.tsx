@@ -1,10 +1,11 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
 import { JourneyTimeline } from "@/components/site/JourneyTimeline";
-import { coreServices, servicePages } from "@/content/services";
+import { servicePages } from "@/content/services";
 import { audiences } from "@/content/audiences";
 
 const SERVICE_LIST = [
@@ -15,6 +16,22 @@ const SERVICE_LIST = [
 ];
 
 export default function Ecosystem() {
+  const [query, setQuery] = useState("");
+
+  const visibleAudiences = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return Object.values(audiences);
+    return Object.values(audiences).filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        a.lede.toLowerCase().includes(q) ||
+        a.value.some(
+          (v) =>
+            v.title.toLowerCase().includes(q) || v.text.toLowerCase().includes(q),
+        ),
+    );
+  }, [query]);
+
   return (
     <>
       <PageHeader
@@ -155,10 +172,34 @@ export default function Ecosystem() {
             Each participant group has a dedicated page with its value
             proposition, engagement opportunities and next steps.
           </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Object.values(audiences).map((audience, i) => (
-              <Reveal key={audience.slug} delay={(i % 3) * 0.07}>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="relative w-full sm:max-w-sm">
+              <label htmlFor="audience-search" className="sr-only">
+                Search participants
+              </label>
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ash"
+                aria-hidden="true"
+              />
+              <input
+                id="audience-search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search participants…"
+                className="h-10 w-full rounded-md border border-white/15 bg-ink/80 pl-9 pr-3 text-sm text-chalk placeholder:text-ash/60 outline-none transition-colors focus:border-innovation"
+              />
+            </div>
+            <p className="text-xs text-ash/70">
+              {visibleAudiences.length} of {Object.values(audiences).length} participant groups
+            </p>
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleAudiences.length > 0 ? (
+              visibleAudiences.map((audience) => (
                 <Link
+                  key={audience.slug}
                   to={`/engage/${audience.slug}`}
                   className="group flex h-full items-start justify-between gap-4 rounded-xl border border-white/10 bg-ink/70 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-innovation/60"
                 >
@@ -175,8 +216,25 @@ export default function Ecosystem() {
                     aria-hidden="true"
                   />
                 </Link>
-              </Reveal>
-            ))}
+              ))
+            ) : (
+              <div className="col-span-full rounded-xl border border-dashed border-white/15 bg-ink/50 p-8 text-center">
+                <p className="font-display text-base font-bold text-chalk">
+                  No participant groups match “{query}”
+                </p>
+                <p className="mt-2 text-sm text-ash">
+                  Try “university”, “TVET”, “government”, “schools”, “startups” or
+                  “partners”.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="mt-4 rounded-md border border-white/20 px-4 py-2 font-display text-sm font-semibold text-chalk transition-colors hover:border-innovation hover:text-innovation"
+                >
+                  Clear search
+                </button>
+              </div>
+            )}
           </div>
 
           <Callout tone="neutral" className="mt-8">

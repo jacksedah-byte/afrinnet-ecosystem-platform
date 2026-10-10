@@ -33,12 +33,8 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close dropdowns on route change, outside click and Escape.
-  useEffect(() => {
-    setOpenGroup(null);
-    setMobileOpen(false);
-  }, [location.pathname, location.hash]);
-
+  // Dropdowns and the mobile sheet close on interaction, outside click,
+  // Escape, and navigation — no state updates inside effects.
   useEffect(() => {
     const onPointerDown = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
@@ -78,7 +74,7 @@ export function SiteHeader() {
               "flex h-9 items-center justify-between gap-4 text-[0.78rem]",
             )}
           >
-            <p className="truncate text-ash">
+            <p className="text-ash leading-4 sm:truncate">
               <span className="mr-2 inline-block size-1.5 rounded-full bg-innovation align-middle" />
               {announcement.text}{" "}
               <Link
@@ -172,8 +168,9 @@ export function SiteHeader() {
 
                   <div
                     id={`nav-panel-${i}`}
+                    onClick={() => setOpenGroup(null)}
                     className={cn(
-                      "absolute top-[calc(100%+10px)] z-50 rounded-xl border border-white/10 bg-ink/97 p-4 shadow-2xl shadow-black/40 backdrop-blur transition-all duration-200",
+                      "absolute top-[calc(100%+10px)] z-50 rounded-xl border border-white/10 bg-ink/97 p-4 shadow-2xl shadow-black/40 backdrop-blur-md transition-all duration-200",
                       alignRight ? "right-0" : "left-0",
                       group.columns.length > 1 ? "w-[560px]" : "w-[380px]",
                       open
@@ -284,6 +281,7 @@ export function SiteHeader() {
               <div key={group.label} className="border-b border-white/10 py-4 first:pt-0">
                 <Link
                   to={group.href}
+                  onClick={() => setMobileOpen(false)}
                   className="font-display text-base font-bold tracking-tight text-chalk"
                 >
                   {group.label}

@@ -43,7 +43,7 @@ export default function Governance() {
                 {/* Connector between levels */}
                 {li > 0 && (
                   <div aria-hidden="true" className="flex justify-center py-5">
-                    <div className="h-10 w-px bg-gradient-to-b from-innovation/70 to-innovation/20" />
+                    <div className="h-10 w-px bg-linear-to-b from-innovation/70 to-innovation/20" />
                   </div>
                 )}
 

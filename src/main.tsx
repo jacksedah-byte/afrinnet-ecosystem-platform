@@ -1,6 +1,7 @@
 import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
 import { RequireAuth } from "@/components/RequireAuth";
+import { SiteLayout } from "@/components/site/SiteLayout";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient } from "convex/react";
@@ -10,18 +11,50 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router";
 import "./index.css";
 
 // Lazy load route components for better code splitting
-const Landing = lazy(() => import("./pages/Landing.tsx"));
+const Home = lazy(() => import("./pages/Home.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
+const About = lazy(() => import("./pages/About.tsx"));
+const MissionVision = lazy(() => import("./pages/MissionVision.tsx"));
+
+const Leadership = lazy(() => import("./pages/Leadership.tsx"));
+const FounderProfile = lazy(() => import("./pages/FounderProfile.tsx"));
+const FounderStory = lazy(() => import("./pages/FounderStory.tsx"));
+const ExecutiveProfile = lazy(() => import("./pages/ExecutiveProfile.tsx"));
+const Board = lazy(() => import("./pages/Board.tsx"));
+const Management = lazy(() => import("./pages/Management.tsx"));
+const Governance = lazy(() => import("./pages/Governance.tsx"));
+
+const Ecosystem = lazy(() => import("./pages/Ecosystem.tsx"));
+const ServicePage = lazy(() => import("./pages/ServicePage.tsx"));
+const IpServices = lazy(() => import("./pages/IpServices.tsx"));
+const IpDetail = lazy(() => import("./pages/IpDetail.tsx"));
+const Audience = lazy(() => import("./pages/Audience.tsx"));
+
+const Knowledge = lazy(() => import("./pages/Knowledge.tsx"));
+const News = lazy(() => import("./pages/News.tsx"));
+
+const SubmitInnovation = lazy(() => import("./pages/SubmitInnovation.tsx"));
+const Partnerships = lazy(() => import("./pages/Partnerships.tsx"));
+const Contact = lazy(() => import("./pages/Contact.tsx"));
+const Legal = lazy(() => import("./pages/Legal.tsx"));
+
 // Simple loading fallback for route transitions
 function RouteLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    <div className="min-h-screen flex items-center justify-center bg-obsidian">
+      <div className="animate-pulse font-display text-sm uppercase tracking-[0.2em] text-ash">
+        Loading…
+      </div>
     </div>
   );
+}
+
+/** Wraps every public page with the shared header, footer and scroll manager. */
+function Public({ children }: { children: React.ReactNode }) {
+  return <SiteLayout>{children}</SiteLayout>;
 }
 
 /** Silent error boundary — if VlyToolbar crashes it renders nothing instead of
@@ -55,8 +88,8 @@ class RootErrorBoundary extends React.Component<
       stack: error.stack || "",
     };
   }
-  componentDidCatch(err: Error) {
-    console.error("[Preview] Root crash:", err);
+  componentDidCatch(error: Error) {
+    console.error("[Preview] Root crash:", error);
   }
   render() {
     if (this.state.hasError) {
@@ -82,8 +115,6 @@ class RootErrorBoundary extends React.Component<
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
-
-
 function RouteSyncer() {
   const location = useLocation();
   useEffect(() => {
@@ -104,9 +135,46 @@ function RouteSyncer() {
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
+  // Unique document titles per route for SEO and orientation.
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      "/": "AFRINNET Foundation — African Innovation Network",
+      "/about": "About AFRINNET — AFRINNET Foundation",
+      "/about/mission-vision": "Mission, Vision & Strategy — AFRINNET Foundation",
+      "/leadership": "Leadership & Governance — AFRINNET Foundation",
+      "/leadership/founder": "Our Founder — AFRINNET Foundation",
+      "/leadership/founder/story": "Why AFRINNET Exists — AFRINNET Foundation",
+      "/leadership/executive": "Executive Leadership — AFRINNET Foundation",
+      "/leadership/board": "Board of Directors — AFRINNET Foundation",
+      "/leadership/management": "Management Committee — AFRINNET Foundation",
+      "/leadership/governance": "Governance & Structure — AFRINNET Foundation",
+      "/ecosystem": "Innovation Ecosystem — AFRINNET Foundation",
+      "/ip": "Intellectual Property Services — AFRINNET Foundation",
+      "/knowledge": "Knowledge Centre — AFRINNET Foundation",
+      "/knowledge/publications": "Publications & Policy Briefs — AFRINNET Foundation",
+      "/news": "News & Events — AFRINNET Foundation",
+      "/submit": "Submit an Innovation — AFRINNET Foundation",
+      "/partnerships": "Become an Institutional Partner — AFRINNET Foundation",
+      "/request-ip-support": "Request IP Support — AFRINNET Foundation",
+      "/contact": "Contact — AFRINNET Foundation",
+      "/privacy": "Privacy Policy — AFRINNET Foundation",
+      "/terms": "Terms of Use — AFRINNET Foundation",
+      "/accessibility": "Accessibility Statement — AFRINNET Foundation",
+    };
+    const base =
+      titles[location.pathname] ??
+      (location.pathname.startsWith("/ecosystem/")
+        ? "Innovation Service — AFRINNET Foundation"
+        : location.pathname.startsWith("/ip/")
+          ? "IP Guidance — AFRINNET Foundation"
+          : location.pathname.startsWith("/engage/")
+            ? "Engage with AFRINNET — AFRINNET Foundation"
+            : "AFRINNET Foundation");
+    document.title = base;
+  }, [location.pathname]);
+
   return null;
 }
-
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -119,7 +187,41 @@ createRoot(document.getElementById("root")!).render(
           <RouteSyncer />
           <Suspense fallback={<RouteLoading />}>
             <Routes>
-              <Route path="/" element={<Landing />} />
+              {/* Public website */}
+              <Route path="/" element={<Public><Home /></Public>} />
+              <Route path="/about" element={<Public><About /></Public>} />
+              <Route path="/about/mission-vision" element={<Public><MissionVision /></Public>} />
+
+              <Route path="/leadership" element={<Public><Leadership /></Public>} />
+              <Route path="/leadership/founder" element={<Public><FounderProfile /></Public>} />
+              <Route path="/leadership/founder/story" element={<Public><FounderStory /></Public>} />
+              <Route path="/leadership/executive" element={<Public><ExecutiveProfile /></Public>} />
+              <Route path="/leadership/board" element={<Public><Board /></Public>} />
+              <Route path="/leadership/management" element={<Public><Management /></Public>} />
+              <Route path="/leadership/governance" element={<Public><Governance /></Public>} />
+
+              <Route path="/ecosystem" element={<Public><Ecosystem /></Public>} />
+              <Route path="/ecosystem/:slug" element={<Public><ServicePage /></Public>} />
+
+              <Route path="/ip" element={<Public><IpServices /></Public>} />
+              <Route path="/ip/:slug" element={<Public><IpDetail /></Public>} />
+              <Route path="/request-ip-support" element={<Public><Contact variant="ip-support" /></Public>} />
+
+              <Route path="/engage/:slug" element={<Public><Audience /></Public>} />
+
+              <Route path="/knowledge" element={<Public><Knowledge /></Public>} />
+              <Route path="/knowledge/publications" element={<Public><Knowledge presetType="publications" /></Public>} />
+              <Route path="/news" element={<Public><News /></Public>} />
+
+              <Route path="/submit" element={<Public><SubmitInnovation /></Public>} />
+              <Route path="/partnerships" element={<Public><Partnerships /></Public>} />
+              <Route path="/contact" element={<Public><Contact /></Public>} />
+
+              <Route path="/privacy" element={<Public><Legal doc="privacy" /></Public>} />
+              <Route path="/terms" element={<Public><Legal doc="terms" /></Public>} />
+              <Route path="/accessibility" element={<Public><Legal doc="accessibility" /></Public>} />
+
+              {/* Authentication and member portal */}
               <Route
                 path="/auth"
                 element={<AuthPage redirectAfterAuth="/dashboard" />}
@@ -127,11 +229,15 @@ createRoot(document.getElementById("root")!).render(
               <Route
                 path="/dashboard"
                 element={
-                  <RequireAuth>
+                  <RequireAuth
+                    title="Sign in to view your AFRINNET account"
+                    description="Your submissions, references and portal modules live here."
+                  >
                     <Dashboard />
                   </RequireAuth>
                 }
               />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
