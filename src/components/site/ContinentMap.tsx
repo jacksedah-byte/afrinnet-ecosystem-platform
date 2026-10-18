@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import { mapRegions } from "@/content/audiences";
-import { AFRICA_PATH, AFRICA_VIEWBOX, MADAGASCAR_PATH, OUTLINE_POINTS } from "./africa";
+import { AFRICA_PATH, AFRICA_VIEWBOX, COUNTRIES, MADAGASCAR_PATH } from "./africa";
 import { cn } from "@/lib/utils";
 
 /**
@@ -32,32 +32,44 @@ export function ContinentMap() {
               viewBox={AFRICA_VIEWBOX}
               className="absolute inset-0 h-full w-full p-6 sm:p-10"
               role="img"
-              aria-label="Stylised map of Africa with five regional markers"
+              aria-label="Map of Africa showing all 51 countries with five regional markers"
             >
+              {/* Real country geometry (Natural Earth 1:110m) — borders read like a proper map. */}
+              <g>
+                {COUNTRIES.map((country) => (
+                  <path
+                    key={country.name}
+                    d={country.d}
+                    fill="rgba(24,54,91,0.55)"
+                    stroke="rgba(165,174,169,0.35)"
+                    strokeWidth="0.7"
+                    strokeLinejoin="round"
+                  />
+                ))}
+              </g>
+              {/* Crisper continental coastline over the country fill */}
               <path
                 d={AFRICA_PATH}
-                fill="rgba(24,54,91,0.35)"
-                stroke="rgba(165,174,169,0.5)"
-                strokeWidth="1.5"
+                fill="none"
+                stroke="rgba(165,174,169,0.75)"
+                strokeWidth="1.4"
                 strokeLinejoin="round"
               />
               <path
                 d={MADAGASCAR_PATH}
-                fill="rgba(24,54,91,0.35)"
-                stroke="rgba(165,174,169,0.5)"
-                strokeWidth="1.5"
+                fill="none"
+                stroke="rgba(165,174,169,0.75)"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
               />
-              {OUTLINE_POINTS.map(([x, y], i) => (
-                <circle key={i} cx={x} cy={y} r="1.4" fill="#A5AEA9" opacity="0.5" />
-              ))}
 
               {/* Aspirational connective lines between regions (decorative) */}
-              <g stroke="#16A34A" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="3 7">
-                <path d="M210 96 L92 232" />
-                <path d="M92 232 L200 288" />
-                <path d="M200 288 L306 244" />
-                <path d="M200 288 L214 398" />
-                <path d="M306 244 L214 398" />
+              <g stroke="#16A34A" strokeOpacity="0.45" strokeWidth="1" strokeDasharray="3 7">
+                <path d="M200.4 102.5 L223.5 248.7" />
+                <path d="M95.7 193.6 L223.5 248.7" />
+                <path d="M223.5 248.7 L322.2 231.4" />
+                <path d="M223.5 248.7 L244.9 386.9" />
+                <path d="M322.2 231.4 L244.9 386.9" />
               </g>
 
               {mapRegions.map((region, i) => {
@@ -131,8 +143,9 @@ export function ContinentMap() {
           </div>
         </div>
         <p className="mt-3 text-xs leading-5 text-ash/70">
-          Stylised silhouette for orientation only — markers indicate regions,
-          not institutions or coverage.
+          Generalised outline and country borders (Natural Earth 1:110m, public
+          domain) for orientation only — markers indicate regions, not
+          institutions or coverage.
         </p>
       </div>
 

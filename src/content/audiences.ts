@@ -276,40 +276,40 @@ export const mapRegions: {
   {
     id: "north",
     label: "North Africa",
-    x: 210,
-    y: 96,
+    x: 200.4,
+    y: 102.5,
     blurb:
       "Regional connections are being explored with universities, research bodies and innovation support organisations.",
   },
   {
     id: "west",
     label: "West Africa",
-    x: 92,
-    y: 232,
+    x: 95.7,
+    y: 193.6,
     blurb:
       "Regional connections are being explored with universities, TVET institutions and public innovation agencies.",
   },
   {
     id: "central",
     label: "Central Africa",
-    x: 200,
-    y: 288,
+    x: 223.5,
+    y: 248.7,
     blurb:
       "Regional connections are being explored with technical institutions and research organisations.",
   },
   {
     id: "east",
     label: "East Africa",
-    x: 306,
-    y: 244,
+    x: 322.2,
+    y: 231.4,
     blurb:
       "Regional connections are being explored with universities, hubs and technology transfer networks.",
   },
   {
     id: "southern",
     label: "Southern Africa",
-    x: 214,
-    y: 398,
+    x: 244.9,
+    y: 386.9,
     blurb:
       "Regional connections are being explored with TVET institutions, universities and industry partners.",
   },

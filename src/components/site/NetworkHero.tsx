@@ -3,6 +3,7 @@ import { useReducedMotion } from "framer-motion";
 import {
   AFRICA_PATH,
   AFRICA_VIEWBOX,
+  COUNTRIES,
   MADAGASCAR_PATH,
   NETWORK_EDGES,
   NETWORK_NODES,
@@ -25,7 +26,7 @@ const FLOATING_LABELS: {
 ];
 
 /**
- * Hero visual: continental silhouette drawn from connected points with fine
+ * Hero visual: a real outline of Africa (Natural Earth 1:110m) drawn with fine
  * network lines, progressive node/line animation, light pulses and a small
  * scroll drift. Static when prefers-reduced-motion is set.
  */
@@ -100,6 +101,13 @@ export function NetworkHero() {
           className={staticMode ? "" : "afr-line"}
           style={{ ["--afr-dash" as string]: "300" }}
         />
+
+        {/* Real country borders, drawn faintly so the silhouette reads as a proper map */}
+        <g fill="none" stroke="rgba(165,174,169,0.3)" strokeWidth="0.7">
+          {COUNTRIES.map((country) => (
+            <path key={country.name} d={country.d} />
+          ))}
+        </g>
 
         {/* Network links */}
         <g strokeLinecap="round">
