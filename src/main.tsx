@@ -1,10 +1,14 @@
 import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
 import { RequireAuth } from "@/components/RequireAuth";
+import { CmsPageContent } from "@/components/site/CmsPageContent";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
-import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { ClerkProvider, useAuth as useClerkAuth } from "@clerk/react";
 import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import React, { StrictMode, useEffect, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
@@ -12,8 +16,10 @@ import "./index.css";
 
 // Lazy load route components for better code splitting
 const Home = lazy(() => import("./pages/Home.tsx"));
-const AuthPage = lazy(() => import("./pages/Auth.tsx"));
+const Landing = lazy(() => import("./pages/Landing.tsx"));
+const AuthPage = lazy(() => import("./pages/ClerkAuth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
+const Cms = lazy(() => import("./pages/Cms.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 const About = lazy(() => import("./pages/About.tsx"));
@@ -54,7 +60,25 @@ function RouteLoading() {
 
 /** Wraps every public page with the shared header, footer and scroll manager. */
 function Public({ children }: { children: React.ReactNode }) {
-  return <SiteLayout>{children}</SiteLayout>;
+  const location = useLocation();
+  const content = useQuery(api.cms.getPublishedByPath, { path: location.pathname });
+  return (
+    <SiteLayout>
+      {content ? <CmsPageContent title={content.title} content={content.content} /> : children}
+    </SiteLayout>
+  );
+}
+
+function DynamicCmsRoute() {
+  const location = useLocation();
+  const content = useQuery(api.cms.getPublishedByPath, { path: location.pathname });
+  if (content === undefined) return <RouteLoading />;
+  if (!content) return <NotFound />;
+  return (
+    <SiteLayout>
+      <CmsPageContent title={content.title} content={content.content} />
+    </SiteLayout>
+  );
 }
 
 /** Silent error boundary — if VlyToolbar crashes it renders nothing instead of
@@ -113,7 +137,31 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+const convexUrl = import.meta.env.VITE_CONVEX_URL;
+const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
+
+function SetupRequired() {
+  const missing = [
+    !clerkPublishableKey && "VITE_CLERK_PUBLISHABLE_KEY",
+    !convexUrl && "VITE_CONVEX_URL",
+  ].filter((name): name is string => typeof name === "string");
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
+      <section className="w-full max-w-xl border-t-4 border-innovation pt-6">
+        <p className="afr-eyebrow text-muted-foreground">AFRINNET Foundation</p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">Connect the app services</h1>
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          Add these client environment variables to the development or production environment, then restart the app:
+        </p>
+        <ul className="mt-4 space-y-2 font-mono text-sm">
+          {missing.map((name) => <li key={name}>{name}</li>)}
+        </ul>
+      </section>
+    </main>
+  );
+}
 
 function RouteSyncer() {
   const location = useLocation();
@@ -179,16 +227,22 @@ function RouteSyncer() {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RootErrorBoundary>
-      <ToolbarErrorBoundary>
-        <VlyToolbar />
-      </ToolbarErrorBoundary>
-      <ConvexAuthProvider client={convex}>
-        <BrowserRouter>
+      {!convex || !clerkPublishableKey ? (
+        <SetupRequired />
+      ) : (
+        <>
+          <ToolbarErrorBoundary>
+            <VlyToolbar />
+          </ToolbarErrorBoundary>
+          <ClerkProvider publishableKey={clerkPublishableKey}>
+            <ConvexProviderWithClerk client={convex} useAuth={useClerkAuth}>
+          <BrowserRouter>
           <RouteSyncer />
           <Suspense fallback={<RouteLoading />}>
             <Routes>
               {/* Public website */}
               <Route path="/" element={<Public><Home /></Public>} />
+              <Route path="/landing" element={<Public><Landing /></Public>} />
               <Route path="/about" element={<Public><About /></Public>} />
               <Route path="/about/mission-vision" element={<Public><MissionVision /></Public>} />
 
@@ -237,13 +291,27 @@ createRoot(document.getElementById("root")!).render(
                   </RequireAuth>
                 }
               />
+              <Route
+                path="/cms"
+                element={
+                  <RequireAuth
+                    title="Sign in to manage website content"
+                    description="The AFRINNET content workspace is restricted to approved administrators."
+                  >
+                    <Cms />
+                  </RequireAuth>
+                }
+              />
 
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<DynamicCmsRoute />} />
             </Routes>
           </Suspense>
-        </BrowserRouter>
-        <Toaster />
-      </ConvexAuthProvider>
+              </BrowserRouter>
+              <Toaster />
+            </ConvexProviderWithClerk>
+          </ClerkProvider>
+        </>
+      )}
     </RootErrorBoundary>
   </StrictMode>,
 );
