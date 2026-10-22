@@ -3,9 +3,14 @@ import { ArrowRight, Scale } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
-import { ipDisclaimer, ipOverview } from "@/content/ip";
+import { ipDisclaimer as defaultIpDisclaimer, ipOverview as defaultIpOverview } from "@/content/ip";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 export default function IpServices() {
+  const { ipDisclaimer, ipOverview } = useCmsModule("ip", {
+    ipDisclaimer: defaultIpDisclaimer,
+    ipOverview: defaultIpOverview,
+  });
   return (
     <>
       <PageHeader

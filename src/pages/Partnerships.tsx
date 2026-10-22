@@ -3,7 +3,8 @@ import { ArrowRight, Check } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
-import { audiences } from "@/content/audiences";
+import { audiences as defaultAudiences } from "@/content/audiences";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 const PARTNERSHIP_TYPES = [
   {
@@ -41,6 +42,7 @@ const EXPECTATIONS = [
 ];
 
 export default function Partnerships() {
+  const { audiences } = useCmsModule("audiences", { audiences: defaultAudiences });
   return (
     <>
       <PageHeader

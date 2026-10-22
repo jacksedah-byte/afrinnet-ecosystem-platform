@@ -3,8 +3,9 @@ import { Link } from "react-router";
 import { ArrowUpRight, FileText } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Container, SectionHeading, StatusBadge } from "@/components/site/primitives";
-import { knowledgeNotice, resources, type Resource } from "@/content/resources";
+import { knowledgeNotice as defaultKnowledgeNotice, resources as defaultResources, type Resource } from "@/content/resources";
 import { cn } from "@/lib/utils";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 const FILTERS = ["All", "Learning resource", "IP guide", "Toolkit", "Policy brief", "Report", "Case study"] as const;
 
@@ -53,10 +54,14 @@ function ResourceRow({ item }: { item: Resource }) {
 /** Homepage Section 9 — knowledge, research and policy (editorial layout). */
 export function KnowledgePreview() {
   const [filter, setFilter] = useState<string>("All");
+  const { resources, knowledgeNotice } = useCmsModule("resources", {
+    resources: defaultResources,
+    knowledgeNotice: defaultKnowledgeNotice,
+  });
 
   const filtered = useMemo(
     () => (filter === "All" ? resources : resources.filter((r) => r.type === filter)),
-    [filter],
+    [filter, resources],
   );
 
   const featured = resources.find((r) => r.featured) ?? resources[0];

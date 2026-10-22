@@ -12,7 +12,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/site/Logo";
 import { Callout, StatusBadge } from "@/components/site/primitives";
-import { roadmapPhases } from "@/content/site";
+import { roadmapPhases as defaultRoadmapPhases } from "@/content/site";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 const MODULES = [
   {
@@ -50,6 +51,7 @@ const QUICK_LINKS = [
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
+  const { roadmapPhases } = useCmsModule("site", { roadmapPhases: defaultRoadmapPhases });
   const navigate = useNavigate();
 
   const handleSignOut = async () => {

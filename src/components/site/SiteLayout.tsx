@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from "react";
 import { useLocation } from "react-router";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 
 /**
  * Shared shell for every public page: sticky header, main region, footer.
@@ -9,6 +10,17 @@ import { SiteFooter } from "./SiteFooter";
  */
 export function SiteLayout({ children }: { children: ReactNode }) {
   const { pathname, hash } = useLocation();
+  const { faviconUrl } = useSiteSettings();
+
+  useEffect(() => {
+    let favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!favicon) {
+      favicon = document.createElement("link");
+      favicon.rel = "icon";
+      document.head.append(favicon);
+    }
+    favicon.href = faviconUrl || "/logo.svg";
+  }, [faviconUrl]);
 
   useEffect(() => {
     const reduce =

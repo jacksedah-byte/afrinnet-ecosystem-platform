@@ -2,11 +2,20 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { Container, SectionHeading } from "@/components/site/primitives";
-import { coreServices } from "@/content/services";
+import { coreServices as defaultCoreServices } from "@/content/services";
 import { cn } from "@/lib/utils";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Homepage Section 4 — six core services, each linking to its service page. */
 export function CoreServices() {
+  const { coreServices: serviceContent } = useCmsModule("services", {
+    coreServices: defaultCoreServices,
+  });
+  const coreServices = serviceContent.map((service) => ({
+    ...service,
+    icon: defaultCoreServices.find((item) => item.title === service.title)?.icon
+      ?? defaultCoreServices[0].icon,
+  }));
   return (
     <section id="services" className="bg-obsidian py-20 sm:py-28">
       <Container>

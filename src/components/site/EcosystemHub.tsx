@@ -9,8 +9,9 @@ import {
   Wrench,
   type LucideIcon,
 } from "lucide-react";
-import { stakeholders } from "@/content/audiences";
+import { stakeholders as defaultStakeholders } from "@/content/audiences";
 import { cn } from "@/lib/utils";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 const ICONS: Record<string, LucideIcon> = {
   "/engage/government": Building2,
@@ -66,6 +67,7 @@ function StakeholderCard({
  * for reduced-motion users and on small screens.
  */
 export function EcosystemHub() {
+  const { stakeholders } = useCmsModule("audiences", { stakeholders: defaultStakeholders });
   const reduceMotion = useReducedMotion();
   const staticMode = !!reduceMotion;
 

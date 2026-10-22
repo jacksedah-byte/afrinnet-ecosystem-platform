@@ -1,9 +1,11 @@
 import { PersonProfile, ProfileCtas } from "@/components/site/PersonProfile";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
-import { founder } from "@/content/leadership";
+import { founder as defaultFounder } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 export default function FounderProfile() {
+  const { founder } = useCmsModule("leadership", { founder: defaultFounder });
   return (
     <>
       <PersonProfile

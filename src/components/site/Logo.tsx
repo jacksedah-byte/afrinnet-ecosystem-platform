@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 
 /**
  * AFRINNET logo placeholder — a clearly replaceable mark, not an official logo.
@@ -47,18 +48,29 @@ export function Logo({
   className?: string;
   compact?: boolean;
 }) {
+  const { siteMeta, logoUrl } = useSiteSettings();
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
-      <LogoMark />
-      {!compact && (
+      {logoUrl ? (
+        <img
+          src={logoUrl}
+          alt={siteMeta.name}
+          className={cn("h-10 w-auto max-w-56 object-contain", compact && "max-w-36")}
+        />
+      ) : (
+        <>
+          <LogoMark />
+          {!compact && (
         <span className="flex flex-col leading-none">
           <span className="font-display text-[1.05rem] font-bold tracking-[0.14em] text-chalk">
-            AFRINNET
+            {siteMeta.name}
           </span>
           <span className="mt-0.5 font-display text-[0.5rem] font-semibold tracking-[0.3em] text-ash">
             FOUNDATION
           </span>
         </span>
+          )}
+        </>
       )}
     </span>
   );

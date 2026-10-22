@@ -1,20 +1,23 @@
-import { api } from "@/convex/_generated/api";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useAuth as useClerkAuth, useUser } from "@clerk/react";
 
 export function useAuth() {
-  const { isLoading: isAuthLoading, isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.currentUser);
-  const { signIn, signOut } = useAuthActions();
+  const { isLoaded: isAuthLoaded, isSignedIn, signOut, userId } = useClerkAuth();
+  const { isLoaded: isUserLoaded, user: clerkUser } = useUser();
+  const email = clerkUser?.primaryEmailAddress?.emailAddress;
+  const user = clerkUser
+    ? {
+        name: clerkUser.fullName ?? clerkUser.username ?? email ?? "AFRINNET member",
+        email,
+      }
+    : null;
 
-  // Derive isLoading directly from the dependencies instead of managing separate state
-  const isLoading = isAuthLoading || user === undefined;
+  const isLoading = !isAuthLoaded || (Boolean(isSignedIn) && !isUserLoaded);
 
   return {
     isLoading,
-    isAuthenticated,
+    isAuthenticated: Boolean(isSignedIn),
     user,
-    signIn,
     signOut,
+    userId,
   };
 }

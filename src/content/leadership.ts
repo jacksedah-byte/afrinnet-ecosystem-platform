@@ -9,6 +9,8 @@
 
 export interface PortraitSlot {
   initials: string;
+  imageUrl?: string;
+  storageId?: string;
   status: "awaiting-approval";
   note: string;
 }

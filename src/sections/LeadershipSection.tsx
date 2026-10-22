@@ -3,14 +3,15 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Container, SectionHeading, StatusBadge } from "@/components/site/primitives";
 import { PortraitSlot } from "@/components/site/PortraitSlot";
-import { founder, executiveLead } from "@/content/leadership";
+import { founder as defaultFounder, executiveLead as defaultExecutiveLead } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 function ProfileCard({
   person,
   href,
   cta,
 }: {
-  person: typeof founder;
+  person: typeof defaultFounder;
   href: string;
   cta: string;
 }) {
@@ -18,6 +19,7 @@ function ProfileCard({
     <div className="grid gap-6 sm:grid-cols-[168px_1fr] sm:gap-7">
       <PortraitSlot
         initials={person.portrait.initials}
+        imageUrl={person.portrait.imageUrl}
         note={person.portrait.note}
         name={person.name}
       />
@@ -47,6 +49,10 @@ function ProfileCard({
  * the institutional ecosystem section.
  */
 export function LeadershipSection() {
+  const { founder, executiveLead } = useCmsModule("leadership", {
+    founder: defaultFounder,
+    executiveLead: defaultExecutiveLead,
+  });
   return (
     <section className="bg-obsidian py-20 sm:py-28">
       <Container>

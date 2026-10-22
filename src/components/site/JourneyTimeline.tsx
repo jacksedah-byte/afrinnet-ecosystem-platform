@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { journeySteps } from "@/content/services";
+import { journeySteps as defaultJourneySteps } from "@/content/services";
 import { cn } from "@/lib/utils";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /**
  * Discover → Submit → Review → Connect → Advance.
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
  * on mobile. Steps activate in sequence once, as the section enters view.
  */
 export function JourneyTimeline({ className }: { className?: string }) {
+  const { journeySteps } = useCmsModule("services", { journeySteps: defaultJourneySteps });
   const reduceMotion = useReducedMotion();
   const staticMode = !!reduceMotion;
 

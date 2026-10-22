@@ -1,7 +1,8 @@
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
-import { governance } from "@/content/leadership";
+import { governance as defaultGovernance } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 import { cn } from "@/lib/utils";
 
 const TONE_STYLES = {
@@ -11,6 +12,7 @@ const TONE_STYLES = {
 } as const;
 
 export default function Governance() {
+  const { governance } = useCmsModule("leadership", { governance: defaultGovernance });
   return (
     <>
       <PageHeader

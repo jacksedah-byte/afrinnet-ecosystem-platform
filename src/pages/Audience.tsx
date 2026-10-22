@@ -4,10 +4,12 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
 import NotFound from "./NotFound";
-import { audiences } from "@/content/audiences";
+import { audiences as defaultAudiences } from "@/content/audiences";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Template for /engage/:slug — six stakeholder landing pages. */
 export default function Audience() {
+  const { audiences } = useCmsModule("audiences", { audiences: defaultAudiences });
   const { slug } = useParams();
   const audience = slug ? audiences[slug] : undefined;
 

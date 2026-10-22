@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
 import { useIntake } from "@/hooks/use-intake";
-import { footerNotes } from "@/content/site";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 
 const ENQUIRY_TYPES = [
   {
@@ -60,6 +60,7 @@ export default function Contact({
   const [searchParams] = useSearchParams();
   const preset = variant === "ip-support" ? "support" : (searchParams.get("type") ?? "");
   const { sendEnquiry, readError } = useIntake();
+  const { footerNotes, contactEmail } = useSiteSettings();
 
   const [type, setType] = useState(PRESET_MAP[preset] ?? "general");
   const [name, setName] = useState("");
@@ -358,7 +359,11 @@ export default function Contact({
                 <div className="mt-4 space-y-4 text-sm leading-6 text-ash">
                   <p className="flex gap-3">
                     <Mail className="mt-1 size-4 shrink-0 text-innovation" aria-hidden="true" />
-                    {footerNotes.contact}
+                    {contactEmail ? (
+                      <a href={`mailto:${contactEmail}`} className="underline-offset-4 hover:text-innovation hover:underline">
+                        {contactEmail}
+                      </a>
+                    ) : footerNotes.contact}
                   </p>
                   <p className="flex gap-3">
                     <MapPin className="mt-1 size-4 shrink-0 text-innovation" aria-hidden="true" />

@@ -5,12 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "convex codegen && tsc -b && vite build",
     "lint": "eslint .",
+    "convex:dev": "convex dev",
+    "convex:codegen": "convex codegen",
+    "convex:deploy": "convex deploy",
     "format": "prettier --write .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/react": "^6.18.0",
     "@convex-dev/auth": "^0.0.90",
     "@hookform/resolvers": "^5.2.2",
     "@jridgewell/trace-mapping": "^0.3.31",

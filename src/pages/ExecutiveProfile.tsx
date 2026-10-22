@@ -1,7 +1,8 @@
 import { PersonProfile, ProfileCtas } from "@/components/site/PersonProfile";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
-import { executiveLead } from "@/content/leadership";
+import { executiveLead as defaultExecutiveLead } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 const FOCUS = [
   {
@@ -27,6 +28,9 @@ const FOCUS = [
 ];
 
 export default function ExecutiveProfile() {
+  const { executiveLead } = useCmsModule("leadership", {
+    executiveLead: defaultExecutiveLead,
+  });
   return (
     <>
       <PersonProfile

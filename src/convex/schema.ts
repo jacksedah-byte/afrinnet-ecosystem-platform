@@ -75,6 +75,22 @@ const schema = defineSchema(
       consent: v.boolean(),
     }).index("by_email", ["email"]),
 
+    siteContent: defineTable({
+      key: v.string(),
+      type: v.string(),
+      title: v.string(),
+      path: v.optional(v.string()),
+      status: v.union(v.literal("draft"), v.literal("published")),
+      content: v.any(),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+      createdBy: v.string(),
+      updatedBy: v.string(),
+    })
+      .index("by_key", ["key"])
+      .index("by_path", ["path"])
+      .index("by_type_status", ["type", "status"]),
+
     // tableName: defineTable({
     //   ...
     //   // table fields

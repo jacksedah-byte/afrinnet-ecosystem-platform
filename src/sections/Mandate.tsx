@@ -1,9 +1,11 @@
 import { Reveal } from "@/components/site/Reveal";
 import { Container, GreenRule } from "@/components/site/primitives";
-import { mandate } from "@/content/about";
+import { mandate as defaultMandate } from "@/content/about";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Homepage Section 3 — the AFRINNET mandate: statement + three principles. */
 export function Mandate() {
+  const { mandate } = useCmsModule("about", { mandate: defaultMandate });
   return (
     <section className="relative overflow-hidden border-y border-white/10 bg-ink py-20 sm:py-28">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 afr-grid-bg opacity-50" />

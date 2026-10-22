@@ -5,18 +5,15 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
 import { JourneyTimeline } from "@/components/site/JourneyTimeline";
-import { servicePages } from "@/content/services";
-import { audiences } from "@/content/audiences";
-
-const SERVICE_LIST = [
-  servicePages.discovery,
-  servicePages.verification,
-  servicePages.networks,
-  servicePages.incubation,
-];
+import { servicePages as defaultServicePages } from "@/content/services";
+import { audiences as defaultAudiences } from "@/content/audiences";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 export default function Ecosystem() {
   const [query, setQuery] = useState("");
+  const { servicePages } = useCmsModule("services", { servicePages: defaultServicePages });
+  const { audiences } = useCmsModule("audiences", { audiences: defaultAudiences });
+  const serviceList = [servicePages.discovery, servicePages.verification, servicePages.networks, servicePages.incubation];
 
   const visibleAudiences = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -30,7 +27,7 @@ export default function Ecosystem() {
             v.title.toLowerCase().includes(q) || v.text.toLowerCase().includes(q),
         ),
     );
-  }, [query]);
+  }, [audiences, query]);
 
   return (
     <>
@@ -72,7 +69,7 @@ export default function Ecosystem() {
           </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {SERVICE_LIST.map((service, i) => (
+            {serviceList.map((service, i) => (
               <Reveal key={service.slug} delay={(i % 2) * 0.08}>
                 <Link
                   to={`/ecosystem/${service.slug}`}

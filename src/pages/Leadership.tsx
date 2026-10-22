@@ -11,13 +11,14 @@ import {
 } from "@/components/site/primitives";
 import { PortraitSlot } from "@/components/site/PortraitSlot";
 import {
-  boardIntro,
-  executiveLead,
-  founder,
-  governance,
-  leadershipOverview,
-  managementIntro,
+  boardIntro as defaultBoardIntro,
+  executiveLead as defaultExecutiveLead,
+  founder as defaultFounder,
+  governance as defaultGovernance,
+  leadershipOverview as defaultLeadershipOverview,
+  managementIntro as defaultManagementIntro,
 } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 const GOVERNANCE_LINKS = [
   {
@@ -58,6 +59,21 @@ const GOVERNANCE_LINKS = [
 ];
 
 export default function Leadership() {
+  const {
+    boardIntro,
+    executiveLead,
+    founder,
+    governance,
+    leadershipOverview,
+    managementIntro,
+  } = useCmsModule("leadership", {
+    boardIntro: defaultBoardIntro,
+    executiveLead: defaultExecutiveLead,
+    founder: defaultFounder,
+    governance: defaultGovernance,
+    leadershipOverview: defaultLeadershipOverview,
+    managementIntro: defaultManagementIntro,
+  });
   return (
     <>
       <PageHeader
@@ -105,6 +121,7 @@ export default function Leadership() {
               <div className="grid gap-6 sm:grid-cols-[190px_1fr]">
                 <PortraitSlot
                   initials={founder.portrait.initials}
+                  imageUrl={founder.portrait.imageUrl}
                   note={founder.portrait.note}
                   name={founder.name}
                 />
@@ -140,6 +157,7 @@ export default function Leadership() {
               <div className="grid gap-6 sm:grid-cols-[190px_1fr]">
                 <PortraitSlot
                   initials={executiveLead.portrait.initials}
+                  imageUrl={executiveLead.portrait.imageUrl}
                   note={executiveLead.portrait.note}
                   name={executiveLead.name}
                 />

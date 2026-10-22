@@ -1,7 +1,8 @@
 import { Link } from "react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
-import { ipDisclaimer, ipOverview } from "@/content/ip";
+import { ipDisclaimer as defaultIpDisclaimer, ipOverview as defaultIpOverview } from "@/content/ip";
+import { useCmsModule } from "@/hooks/use-cms-module";
 import { ArrowRight, ClipboardCheck, ShieldCheck, Waypoints } from "lucide-react";
 
 const PATHWAY = [
@@ -24,6 +25,10 @@ const PATHWAY = [
 
 /** Homepage Section 8 — intellectual property and innovation readiness. */
 export function IPSection() {
+  const { ipDisclaimer, ipOverview } = useCmsModule("ip", {
+    ipDisclaimer: defaultIpDisclaimer,
+    ipOverview: defaultIpOverview,
+  });
   return (
     <section className="bg-obsidian py-20 sm:py-28">
       <Container>

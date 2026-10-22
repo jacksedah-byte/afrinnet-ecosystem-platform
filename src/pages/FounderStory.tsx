@@ -2,16 +2,25 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
 import { PortraitSlot } from "@/components/site/PortraitSlot";
-import { founder } from "@/content/leadership";
+import { founder as defaultFounder } from "@/content/leadership";
 import {
   founderClosing,
   founderStoryChapters,
   founderStoryLinks,
   founderStoryMeta,
 } from "@/content/founderStory";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Long-form editorial founder narrative — "Why AFRINNET Exists". */
 export default function FounderStory() {
+  const { founder } = useCmsModule("leadership", { founder: defaultFounder });
+  const story = useCmsModule("founderStory", {
+    founderClosing,
+    founderStoryChapters,
+    founderStoryLinks,
+    founderStoryMeta,
+  });
+  const { founderClosing: closing, founderStoryChapters: chapters, founderStoryLinks: storyLinks, founderStoryMeta: storyMeta } = story;
   return (
     <>
       <PageHeader
@@ -20,9 +29,9 @@ export default function FounderStory() {
           { label: "Our Founder", href: "/leadership/founder" },
           { label: "Why AFRINNET Exists" },
         ]}
-        eyebrow={founderStoryMeta.eyebrow}
-        title={founderStoryMeta.title}
-        lede={founderStoryMeta.intro}
+        eyebrow={storyMeta.eyebrow}
+        title={storyMeta.title}
+        lede={storyMeta.intro}
         actions={
           <>
             <LinkButton href="/leadership/founder" variant="outline">
@@ -41,19 +50,20 @@ export default function FounderStory() {
           <div className="grid gap-8 md:grid-cols-[240px_1fr] md:gap-12 lg:max-w-4xl">
             <PortraitSlot
               initials={founder.portrait.initials}
+              imageUrl={founder.portrait.imageUrl}
               note={founder.portrait.note}
               name={founder.name}
             />
             <div>
               <p className="afr-eyebrow text-innovation">Samson Ngengi Njuguna</p>
               <p className="mt-3 font-display text-xl font-semibold leading-8 tracking-tight text-chalk sm:text-2xl">
-                “{founderStoryChapters[3].quote?.text}”
+                “{chapters[3].quote?.text}”
               </p>
               <p className="mt-3 text-sm text-ash">
-                {founderStoryChapters[3].quote?.attribution}
+                {chapters[3].quote?.attribution}
               </p>
               <Callout tone="neutral" title="Editorial note" className="mt-6">
-                {founderStoryMeta.editorialNote}
+                {storyMeta.editorialNote}
               </Callout>
             </div>
           </div>
@@ -65,7 +75,7 @@ export default function FounderStory() {
         <Container>
           <h2 className="afr-eyebrow text-ash/80">The narrative in sequence</h2>
           <ol className="mt-5 flex flex-wrap gap-2.5">
-            {founderStoryChapters.map((chapter) => (
+            {chapters.map((chapter) => (
               <li key={chapter.number}>
                 <a
                   href={`#chapter-${chapter.number}`}
@@ -86,7 +96,7 @@ export default function FounderStory() {
       <section className="bg-obsidian pb-20">
         <Container>
           <div className="max-w-3xl">
-            {founderStoryChapters.map((chapter, i) => (
+            {chapters.map((chapter, i) => (
               <Reveal key={chapter.number}>
                 <article
                   id={`chapter-${chapter.number}`}
@@ -140,12 +150,12 @@ export default function FounderStory() {
           <div className="max-w-3xl">
             <p className="afr-eyebrow text-innovation">Closing statement</p>
             <p className="mt-5 font-display text-2xl font-semibold leading-9 tracking-tight text-chalk sm:text-3xl sm:leading-10">
-              “{founderClosing.statement}”
+              “{closing.statement}”
             </p>
-            <p className="mt-4 text-sm text-ash">{founderClosing.attribution}</p>
+            <p className="mt-4 text-sm text-ash">{closing.attribution}</p>
 
             <div className="mt-9 flex flex-wrap gap-3">
-              {founderStoryLinks.map((link, i) => (
+              {storyLinks.map((link, i) => (
                 <LinkButton
                   key={link.href}
                   href={link.href}

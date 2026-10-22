@@ -40,6 +40,7 @@ export function PersonProfile({
             <div>
               <PortraitSlot
                 initials={profile.portrait.initials}
+                imageUrl={profile.portrait.imageUrl}
                 note={profile.portrait.note}
                 name={profile.name}
               />

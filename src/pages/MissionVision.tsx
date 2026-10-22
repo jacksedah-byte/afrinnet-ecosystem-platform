@@ -1,10 +1,13 @@
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
-import { missionVision } from "@/content/about";
-import { roadmapPhases } from "@/content/site";
+import { missionVision as defaultMissionVision } from "@/content/about";
+import { roadmapPhases as defaultRoadmapPhases } from "@/content/site";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 export default function MissionVision() {
+  const { missionVision } = useCmsModule("about", { missionVision: defaultMissionVision });
+  const { roadmapPhases } = useCmsModule("site", { roadmapPhases: defaultRoadmapPhases });
   return (
     <>
       <PageHeader

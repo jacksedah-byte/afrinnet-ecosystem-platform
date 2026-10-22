@@ -1,7 +1,8 @@
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
-import { boardIntro, boardPortfolios } from "@/content/leadership";
+import { boardIntro as defaultBoardIntro, boardPortfolios as defaultBoardPortfolios } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Neutral placeholder profile component — no fictional people or photos. */
 function PortfolioPlaceholder({
@@ -50,6 +51,10 @@ function PortfolioPlaceholder({
 }
 
 export default function Board() {
+  const { boardIntro, boardPortfolios } = useCmsModule("leadership", {
+    boardIntro: defaultBoardIntro,
+    boardPortfolios: defaultBoardPortfolios,
+  });
   return (
     <>
       <PageHeader

@@ -8,8 +8,8 @@ This project uses the following tech stack:
 - Tailwind v4 (for styling)
 - Shadcn UI (for UI components library)
 - Lucide Icons (for icons)
-- Convex (for backend & database)
-- Convex Auth (for authentication)
+- Convex (for backend, database, and CMS content)
+- Clerk (for authentication)
 - Framer Motion (for animations)
 - Three js (for 3d models)
 
@@ -19,7 +19,7 @@ Use bun for the package manager.
 
 ## Setup
 
-This project is set up already and running on a cloud environment, as well as a convex development in the sandbox.
+Link a Convex development deployment before building. Convex API types are generated from the configured deployment and local schema/functions.
 
 ## Environment Variables
 
@@ -27,34 +27,30 @@ The project is set up with project specific CONVEX_DEPLOYMENT and VITE_CONVEX_UR
 
 The convex server has a separate set of environment variables that are accessible by the convex backend.
 
-Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
+Configure the Clerk publishable key in the Vite environment. In Clerk, create a JWT template named `convex` with application ID `convex`, then set its issuer domain and the approved CMS administrator user IDs in the Convex deployment environment.
 
 
-# Using Authentication (Important!)
+# Authentication and CMS
 
-You must follow these conventions when using authentication.
+The frontend uses Clerk, and `ConvexProviderWithClerk` passes Clerk identity tokens to Convex. Set `VITE_CLERK_PUBLISHABLE_KEY` locally and `CLERK_JWT_ISSUER_DOMAIN` in the Convex deployment environment. Clerk's JWT template must use the name `convex` and application ID `convex`.
 
-## Auth is already set up.
+The CMS is available at `/cms`. Add one or more Clerk user IDs to the Convex environment variable `CMS_ADMIN_USER_IDS` (comma-separated) to grant administrator access. Authorization is enforced inside Convex queries and mutations, not only in the page UI.
 
-All convex authentication functions are already set up. The auth currently uses email OTP and anonymous users, but can support more.
+Run `npm run convex:dev` (or the equivalent Bun script) and follow the Convex CLI prompts to link the local workspace. The build generates Convex API types before compiling. Use `npm run convex:deploy` to publish functions and schema changes. Set `CMS_ADMIN_USER_IDS` with `npx convex env set CMS_ADMIN_USER_IDS user_...` after linking the deployment.
 
-The email OTP configuration is defined in `src/convex/auth/emailOtp.ts`. DO NOT MODIFY THIS FILE.
+CMS records and uploaded raster images are stored in Convex. From `/cms`, use **Import current content** to copy the current About, leadership, services, IP, audience, resource, founder-story and site modules into draft records. Review and publish a module record to make its content active; otherwise the existing bundled copy remains the fallback. The import is idempotent and never overwrites an existing CMS record.
 
-Also, DO NOT MODIFY THESE AUTH FILES: `src/convex/auth.config.ts` and `src/convex/auth.ts`.
+A published record with a website path overrides the page at that path; a published record on a new path is served by the CMS route. The page picker creates an override draft for each existing public route. Page, news, and resource records have a visual editor with live preview, editable headings and copy, add/remove/reorder section controls, reusable section templates, and image upload. Supported blocks are `heading`, `text`, `list`, `image`, `feature`, `quote`, and `cta`.
 
-## Using Convex Auth on the backend
+Site settings include visual controls for the site name, description, tagline, announcement bar, contact email, logo, and favicon. Uploaded assets are stored in Convex and can be removed from the settings editor. A configured contact email is rendered as a `mailto:` link in the footer and Contact page; contact form messages continue to be stored in the CMS inbox and require a separately configured email delivery service for notifications.
 
-On the `src/convex/users.ts` file, you can use the `getCurrentUser` function to get the current user's data.
+Imported content modules are editable through structured nested fields, list controls, image upload fields, and an advanced JSON editor. This includes leadership portraits and image fields used by the existing site components. Save records as drafts while reviewing; publish a record to make the changes active. The CMS header includes links back to the website and sign-out.
 
-## Using Convex Auth on the frontend
-
-The `/auth` page is already set up to use auth. Navigate to `/auth` for all log in / sign up sequences.
-
-You MUST use this hook to get user data. Never do this yourself without the hook:
+Use this hook to access authentication state in React:
 ```typescript
 import { useAuth } from "@/hooks/use-auth";
 
-const { isLoading, isAuthenticated, user, signIn, signOut } = useAuth();
+const { isLoading, isAuthenticated, user, userId, signOut } = useAuth();
 ```
 
 ## Protected Routes
@@ -85,33 +81,9 @@ back to it. Pass `title` and `description` to say what the page is:
 Pass `redirectImmediately` for a route where bouncing straight to `/auth` really
 is better.
 
-## Auth Page
+## Sign-In Redirects
 
-The auth page is defined in `src/pages/Auth.tsx`. Send sign-in and sign-up actions
-to `/auth`.
-
-## Authorization
-
-You can perform authorization checks on the frontend and backend.
-
-On the frontend, you can use the `useAuth` hook to get the current user's data and authentication state.
-
-You should also be protecting queries, mutations, and actions at the base level, checking for authorization securely.
-
-## Adding a redirect after auth
-
-The `/auth` route in `src/main.tsx` redirects to `/dashboard` by default. If the
-product's main authenticated route is different, update `redirectAfterAuth` to
-that route. A validated same-origin `returnTo` query parameter takes priority so
-users can resume the protected page they originally requested. Never leave an
-authenticated product redirecting back to the public landing page.
-
-## Complete authenticated products
-
-When the requested product implies accounts, a workspace, a dashboard, or other
-signed-in functionality, the task is not complete with only a landing page and
-auth form. Build the main authenticated experience, protect its route, and verify
-that signing in reaches it.
+The `/auth` route uses Clerk and preserves validated same-origin `returnTo` destinations. Existing Convex data is retained; current Convex Auth accounts are not automatically migrated to Clerk.
 
 # Frontend Conventions
 

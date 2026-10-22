@@ -2,9 +2,14 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
 import { PortraitSlot } from "@/components/site/PortraitSlot";
-import { managementIntro, managementRoles } from "@/content/leadership";
+import { managementIntro as defaultManagementIntro, managementRoles as defaultManagementRoles } from "@/content/leadership";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 export default function Management() {
+  const { managementIntro, managementRoles } = useCmsModule("leadership", {
+    managementIntro: defaultManagementIntro,
+    managementRoles: defaultManagementRoles,
+  });
   return (
     <>
       <PageHeader
@@ -60,6 +65,7 @@ export default function Management() {
                     <div className="mt-5 flex gap-4">
                       <PortraitSlot
                         initials={role.portrait.initials}
+                        imageUrl={role.portrait.imageUrl}
                         note=""
                         className="w-[92px] shrink-0"
                       />

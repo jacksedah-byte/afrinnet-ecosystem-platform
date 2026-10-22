@@ -9,11 +9,13 @@ import {
   StatusBadge,
 } from "@/components/site/primitives";
 import NotFound from "./NotFound";
-import { servicePages } from "@/content/services";
+import { servicePages as defaultServicePages } from "@/content/services";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Template for /ecosystem/:slug — discovery, verification, networks, incubation. */
 export default function ServicePage() {
+  const { servicePages } = useCmsModule("services", { servicePages: defaultServicePages });
   const { slug } = useParams();
   const service = slug ? servicePages[slug] : undefined;
 

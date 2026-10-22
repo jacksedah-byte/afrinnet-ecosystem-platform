@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
+import { useQuery } from "convex/react";
 import { ArrowUpRight, Search, SlidersHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
@@ -20,6 +23,10 @@ const TYPES = [
   "Report",
   "Case study",
 ] as const;
+
+function isResourceType(value: unknown): value is Resource["type"] {
+  return typeof value === "string" && TYPES.includes(value as (typeof TYPES)[number]);
+}
 
 function ResourceCard({ item }: { item: Resource }) {
   const live = item.status === "live" && !!item.href;
@@ -73,14 +80,39 @@ function ResourceCard({ item }: { item: Resource }) {
 
 /** Knowledge Centre — searchable, filterable institutional library. */
 export default function Knowledge({ presetType }: { presetType?: string }) {
+  const publishedRecordsResult = useQuery(api.cms.listPublishedByType, { type: "resource" });
+  const publishedRecords = publishedRecordsResult as Doc<"siteContent">[] | undefined;
   const [query, setQuery] = useState("");
   const [type, setType] = useState<string>(presetType ?? "All types");
   const [topic, setTopic] = useState("All topics");
   const [order, setOrder] = useState<"published-first" | "type">("published-first");
 
+  const allResources = useMemo(() => {
+    const cmsResources: Resource[] = (publishedRecords ?? []).flatMap((record) => {
+      const data = record.content && typeof record.content === "object"
+        ? record.content as { type?: unknown; topic?: unknown; summary?: unknown; dateLabel?: unknown; featured?: unknown }
+        : {};
+      if (!isResourceType(data.type) || typeof data.summary !== "string") return [];
+      return [{
+        id: record.key,
+        title: record.title,
+        type: data.type,
+        topic: typeof data.topic === "string" ? data.topic : "Institutional practice",
+        status: "live" as const,
+        dateLabel: typeof data.dateLabel === "string" ? data.dateLabel : "Published resource",
+        summary: data.summary,
+        href: record.path,
+        featured: data.featured === true,
+      }];
+    });
+    const records = new Map(resources.map((resource) => [resource.id, resource]));
+    for (const resource of cmsResources) records.set(resource.id, resource);
+    return [...records.values()];
+  }, [publishedRecords]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let items = resources.filter((r) => {
+    let items = allResources.filter((r) => {
       const matchesQuery =
         !q ||
         r.title.toLowerCase().includes(q) ||
@@ -98,9 +130,9 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
     );
 
     return items;
-  }, [query, type, topic, order]);
+  }, [allResources, query, type, topic, order]);
 
-  const liveCount = resources.filter((r) => r.status === "live").length;
+  const liveCount = allResources.filter((r) => r.status === "live").length;
 
   return (
     <>
@@ -123,7 +155,7 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <StatusBadge tone="available">{liveCount} live resources</StatusBadge>
           <StatusBadge tone="developing">
-            {resources.length - liveCount} forthcoming
+            {allResources.length - liveCount} forthcoming
           </StatusBadge>
         </div>
       </PageHeader>
@@ -197,7 +229,7 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
 
           <p className="mt-3 flex items-center gap-2 text-xs text-ash/70">
             <SlidersHorizontal className="size-3.5" aria-hidden="true" />
-            {filtered.length} of {resources.length} records shown
+            {filtered.length} of {allResources.length} records shown
             {(query || type !== "All types" || topic !== "All topics") && (
               <button
                 type="button"

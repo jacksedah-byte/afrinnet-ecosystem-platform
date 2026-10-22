@@ -13,9 +13,16 @@ import {
   GreenRule,
   LinkButton,
 } from "@/components/site/primitives";
-import { aboutIntro, faqs, mandate, timeline } from "@/content/about";
+import { aboutIntro as defaultAboutIntro, faqs as defaultFaqs, mandate as defaultMandate, timeline as defaultTimeline } from "@/content/about";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 export default function About() {
+  const { aboutIntro, faqs, mandate, timeline } = useCmsModule("about", {
+    aboutIntro: defaultAboutIntro,
+    faqs: defaultFaqs,
+    mandate: defaultMandate,
+    timeline: defaultTimeline,
+  });
   return (
     <>
       <PageHeader

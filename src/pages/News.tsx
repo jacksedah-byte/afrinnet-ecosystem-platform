@@ -1,7 +1,12 @@
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { Link } from "react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
-import { newsEmptyState } from "@/content/resources";
+import { newsEmptyState as defaultNewsEmptyState } from "@/content/resources";
+import { useCmsModule } from "@/hooks/use-cms-module";
 import { Newspaper, CalendarDays, Megaphone, Award } from "lucide-react";
 
 const WILL_APPEAR = [
@@ -12,6 +17,12 @@ const WILL_APPEAR = [
 ];
 
 export default function News() {
+  const publishedNewsResult = useQuery(api.cms.listPublishedByType, { type: "news" });
+  const publishedNews = publishedNewsResult as Doc<"siteContent">[] | undefined;
+  const { newsEmptyState } = useCmsModule("resources", {
+    newsEmptyState: defaultNewsEmptyState,
+  });
+
   return (
     <>
       <PageHeader
@@ -33,7 +44,22 @@ export default function News() {
 
       <section className="bg-obsidian py-14 sm:py-20">
         <Container>
-          {/* Empty state — honest until real announcements exist */}
+          {publishedNews && publishedNews.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {publishedNews.map((item) => {
+                const data = item.content && typeof item.content === "object"
+                  ? item.content as { summary?: string; dateLabel?: string; category?: string }
+                  : {};
+                return (
+                  <Link key={item._id} to={item.path ?? "/news"} className="block border-t border-white/20 py-5 transition-colors hover:border-innovation">
+                    <p className="text-xs uppercase tracking-[0.12em] text-innovation">{data.category || "News"} · {data.dateLabel || new Date(item.updatedAt).toLocaleDateString()}</p>
+                    <h2 className="mt-3 font-display text-xl font-bold tracking-tight text-chalk">{item.title}</h2>
+                    {data.summary && <p className="mt-2 text-sm leading-6 text-ash">{data.summary}</p>}
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
           <Reveal>
             <div className="rounded-2xl border border-dashed border-white/15 bg-ink/60 p-8 text-center sm:p-12">
               <span className="mx-auto flex size-12 items-center justify-center rounded-full border border-innovation/40 bg-innovation/10 text-innovation">
@@ -55,6 +81,7 @@ export default function News() {
               </div>
             </div>
           </Reveal>
+          )}
 
           {/* What will appear */}
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

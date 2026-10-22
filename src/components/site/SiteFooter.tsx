@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useIntake } from "@/hooks/use-intake";
 import { container } from "./primitives";
 import { Logo } from "./Logo";
-import { footerColumns, footerNotes, siteMeta } from "@/content/site";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -100,6 +100,7 @@ function NewsletterForm() {
 }
 
 export function SiteFooter() {
+  const { footerColumns, footerNotes, siteMeta, contactEmail } = useSiteSettings();
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-obsidian">
       {/* Subtle network texture */}
@@ -161,7 +162,16 @@ export function SiteFooter() {
             {siteMeta.description}
           </p>
           <p className="mt-4 text-xs leading-5 text-ash/70">{footerNotes.social}</p>
-          <p className="mt-3 text-xs leading-5 text-ash/70">{footerNotes.contact}</p>
+          {contactEmail ? (
+            <a
+              href={`mailto:${contactEmail}`}
+              className="mt-3 inline-block text-xs leading-5 text-ash/70 transition-colors hover:text-innovation"
+            >
+              {contactEmail}
+            </a>
+          ) : (
+            <p className="mt-3 text-xs leading-5 text-ash/70">{footerNotes.contact}</p>
+          )}
         </div>
 
         {footerColumns.map((col) => (
@@ -203,6 +213,12 @@ export function SiteFooter() {
             </Link>
             <Link to="/auth" className="transition-colors hover:text-chalk">
               Portal sign-in
+            </Link>
+            <Link
+              to="/cms"
+              className="rounded border border-innovation/50 px-3 py-1.5 font-medium text-innovation transition-colors hover:border-innovation hover:bg-innovation/10 hover:text-chalk"
+            >
+              CMS access
             </Link>
           </div>
         </div>

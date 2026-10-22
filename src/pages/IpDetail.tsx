@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
 import NotFound from "./NotFound";
-import { ipDisclaimer, ipOverview, ipTypes } from "@/content/ip";
+import { ipDisclaimer as defaultIpDisclaimer, ipOverview as defaultIpOverview, ipTypes as defaultIpTypes } from "@/content/ip";
+import { useCmsModule } from "@/hooks/use-cms-module";
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +15,11 @@ import {
 
 /** Template for /ip/:slug — patents, trademarks, copyright, designs, readiness. */
 export default function IpDetail() {
+  const { ipTypes } = useCmsModule("ip", { ipTypes: defaultIpTypes });
+  const { ipDisclaimer, ipOverview } = useCmsModule("ip", {
+    ipDisclaimer: defaultIpDisclaimer,
+    ipOverview: defaultIpOverview,
+  });
   const { slug } = useParams();
   const type = slug ? ipTypes[slug] : undefined;
 

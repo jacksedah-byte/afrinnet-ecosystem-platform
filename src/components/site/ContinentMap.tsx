@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Minus, Plus, RotateCcw } from "lucide-react";
-import { mapRegions } from "@/content/audiences";
+import { mapRegions as defaultMapRegions } from "@/content/audiences";
 import { AFRICA_PATH, AFRICA_VIEWBOX, COUNTRIES, MADAGASCAR_PATH } from "./africa";
 import { cn } from "@/lib/utils";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /**
  * "Building Connections Across Africa" — regional exploration with honest data
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
  * once on entry and stay static for reduced-motion users.
  */
 export function ContinentMap() {
+  const { mapRegions } = useCmsModule("audiences", { mapRegions: defaultMapRegions });
   const reduceMotion = useReducedMotion();
   const staticMode = !!reduceMotion;
   const [activeId, setActiveId] = useState<string>(mapRegions[0].id);
