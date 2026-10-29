@@ -2,9 +2,11 @@ import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { CmsContentSections } from "@/components/site/CmsContentSections";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
-import { ConvexReactClient } from "convex/react";
+import { ConvexReactClient, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import React, { StrictMode, useEffect, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
@@ -13,6 +15,8 @@ import "./index.css";
 // Lazy load route components for better code splitting
 const Home = lazy(() => import("./pages/Home.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
+const CmsPage = lazy(() => import("./pages/Cms.tsx"));
+const CmsPublishedEntry = lazy(() => import("./pages/CmsPublishedEntry.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
@@ -54,6 +58,36 @@ function RouteLoading() {
 
 /** Wraps every public page with the shared header, footer and scroll manager. */
 function Public({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  const page = useQuery(api.cms.publishedPage, { path: pathname });
+
+  if (page) {
+    return (
+      <SiteLayout>
+        <article className="mx-auto max-w-4xl px-6 py-16 text-chalk sm:py-24">
+          <p className="afr-eyebrow text-innovation">AFRINNET Foundation</p>
+          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            {page.title}
+          </h1>
+          {page.summary && (
+            <p className="mt-5 text-lg leading-8 text-ash">{page.summary}</p>
+          )}
+          {page.sections?.length ? (
+            <div className="mt-10">
+              <CmsContentSections sections={page.sections} />
+            </div>
+          ) : (
+            <div className="mt-10 space-y-5 text-base leading-8 text-ash">
+              {page.body.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+          )}
+        </article>
+      </SiteLayout>
+    );
+  }
+
   return <SiteLayout>{children}</SiteLayout>;
 }
 
@@ -113,7 +147,9 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+const convex = new ConvexReactClient(
+  import.meta.env.VITE_CONVEX_URL || "http://127.0.0.1:3210",
+);
 
 function RouteSyncer() {
   const location = useLocation();
@@ -211,7 +247,9 @@ createRoot(document.getElementById("root")!).render(
 
               <Route path="/knowledge" element={<Public><Knowledge /></Public>} />
               <Route path="/knowledge/publications" element={<Public><Knowledge presetType="publications" /></Public>} />
+              <Route path="/knowledge/:slug" element={<Public><CmsPublishedEntry /></Public>} />
               <Route path="/news" element={<Public><News /></Public>} />
+              <Route path="/news/:slug" element={<Public><CmsPublishedEntry /></Public>} />
 
               <Route path="/submit" element={<Public><SubmitInnovation /></Public>} />
               <Route path="/partnerships" element={<Public><Partnerships /></Public>} />
@@ -222,6 +260,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/accessibility" element={<Public><Legal doc="accessibility" /></Public>} />
 
               {/* Authentication and member portal */}
+              <Route path="/cms" element={<CmsPage />} />
               <Route
                 path="/auth"
                 element={<AuthPage redirectAfterAuth="/dashboard" />}

@@ -9,7 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { announcement, navGroups, navPlainLinks, primaryCta } from "@/content/site";
+import { useSiteConfiguration } from "@/hooks/use-site-configuration";
 import { Logo } from "./Logo";
 import { container } from "./primitives";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
  */
 export function SiteHeader() {
   const location = useLocation();
+  const { announcement, navGroups, navPlainLinks, primaryCta } =
+    useSiteConfiguration();
   const [scrolled, setScrolled] = useState(false);
   const [openGroup, setOpenGroup] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);

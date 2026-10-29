@@ -1,14 +1,17 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import { useQuery } from "convex/react";
 import { ArrowUpRight, Search, SlidersHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Container, LinkButton, StatusBadge } from "@/components/site/primitives";
+import { api } from "@/convex/_generated/api";
 import {
   knowledgeNotice,
   resourceTopics,
   resources,
   type Resource,
+  type ResourceType,
 } from "@/content/resources";
 
 const TYPES = [
@@ -77,10 +80,36 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
   const [type, setType] = useState<string>(presetType ?? "All types");
   const [topic, setTopic] = useState("All topics");
   const [order, setOrder] = useState<"published-first" | "type">("published-first");
+  const content = useQuery(api.cms.publishedContent);
+  const { allResources, allTopics } = useMemo(() => {
+    const cmsResources = (content ?? [])
+      .filter((item) => item.type === "resource")
+      .map(
+        (item): Resource => ({
+          id: item.slug,
+          title: item.title,
+          type: "Learning resource" satisfies ResourceType,
+          topic: "AFRINNET",
+          status: "live",
+          dateLabel: `Updated ${new Date(item.updatedAt).toLocaleDateString()}`,
+          summary: item.summary || item.body.slice(0, 240),
+          href: item.path || `/knowledge/${item.slug}`,
+        }),
+      );
+    const resourceIds = new Set(cmsResources.map((item) => item.id));
+    const allResources = [
+      ...resources.filter((item) => !resourceIds.has(item.id)),
+      ...cmsResources,
+    ];
+    const allTopics = [
+      ...new Set([...resourceTopics, ...cmsResources.map((item) => item.topic)]),
+    ];
+    return { allResources, allTopics };
+  }, [content]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let items = resources.filter((r) => {
+    let items = allResources.filter((r) => {
       const matchesQuery =
         !q ||
         r.title.toLowerCase().includes(q) ||
@@ -98,9 +127,9 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
     );
 
     return items;
-  }, [query, type, topic, order]);
+  }, [allResources, query, type, topic, order]);
 
-  const liveCount = resources.filter((r) => r.status === "live").length;
+  const liveCount = allResources.filter((r) => r.status === "live").length;
 
   return (
     <>
@@ -123,7 +152,7 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <StatusBadge tone="available">{liveCount} live resources</StatusBadge>
           <StatusBadge tone="developing">
-            {resources.length - liveCount} forthcoming
+            {allResources.length - liveCount} forthcoming
           </StatusBadge>
         </div>
       </PageHeader>
@@ -170,7 +199,7 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
                 className="h-10 w-full rounded-md border border-white/15 bg-ink/80 px-3 text-sm text-chalk outline-none transition-colors focus:border-innovation"
               >
                 <option className="bg-obsidian">All topics</option>
-                {resourceTopics.map((t) => (
+                {allTopics.map((t) => (
                   <option key={t} value={t} className="bg-obsidian">
                     {t}
                   </option>
@@ -197,7 +226,7 @@ export default function Knowledge({ presetType }: { presetType?: string }) {
 
           <p className="mt-3 flex items-center gap-2 text-xs text-ash/70">
             <SlidersHorizontal className="size-3.5" aria-hidden="true" />
-            {filtered.length} of {resources.length} records shown
+            {filtered.length} of {allResources.length} records shown
             {(query || type !== "All types" || topic !== "All topics") && (
               <button
                 type="button"

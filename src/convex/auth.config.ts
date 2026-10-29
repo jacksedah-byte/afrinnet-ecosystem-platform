@@ -7,9 +7,18 @@ import type { AuthConfig } from "convex/server";
 // `kid` header, which the customJwt validation path requires.
 const freebuffIssuer =
   process.env.VLY_CONVEX_AUTH_ISSUER ?? "https://freebuff.com";
+const clerkIssuer = process.env.CLERK_JWT_ISSUER_DOMAIN;
 
 export default {
   providers: [
+    ...(clerkIssuer
+      ? [
+          {
+            domain: clerkIssuer,
+            applicationID: "convex",
+          },
+        ]
+      : []),
     // Standard Convex Auth provider for this project's own sign-in ("Get
     // Started" email/guest, see src/convex/auth.ts). The deployment
     // self-issues JWTs (iss = CONVEX_SITE_URL, no `kid` header) validated

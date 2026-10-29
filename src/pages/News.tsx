@@ -1,7 +1,10 @@
+import { Link } from "react-router";
+import { useQuery } from "convex/react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
 import { newsEmptyState } from "@/content/resources";
+import { api } from "@/convex/_generated/api";
 import { Newspaper, CalendarDays, Megaphone, Award } from "lucide-react";
 
 const WILL_APPEAR = [
@@ -12,6 +15,9 @@ const WILL_APPEAR = [
 ];
 
 export default function News() {
+  const content = useQuery(api.cms.publishedContent);
+  const articles = content?.filter((item) => item.type === "news") ?? [];
+
   return (
     <>
       <PageHeader
@@ -33,28 +39,48 @@ export default function News() {
 
       <section className="bg-obsidian py-14 sm:py-20">
         <Container>
-          {/* Empty state — honest until real announcements exist */}
-          <Reveal>
-            <div className="rounded-2xl border border-dashed border-white/15 bg-ink/60 p-8 text-center sm:p-12">
-              <span className="mx-auto flex size-12 items-center justify-center rounded-full border border-innovation/40 bg-innovation/10 text-innovation">
-                <Newspaper className="size-5" aria-hidden="true" />
-              </span>
-              <h2 className="mt-5 font-display text-2xl font-bold tracking-tight text-chalk">
-                {newsEmptyState.title}
-              </h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-ash">
-                {newsEmptyState.body}
-              </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <LinkButton href="/#newsletter" variant="primary">
-                  {newsEmptyState.cta.label}
-                </LinkButton>
-                <LinkButton href="/knowledge" variant="outline">
-                  Browse the Knowledge Centre
-                </LinkButton>
-              </div>
+          {articles.length > 0 ? (
+            <div className="grid gap-5 md:grid-cols-2">
+              {articles.map((article) => (
+                <Reveal key={article._id}>
+                  <Link
+                    to={article.path || `/news/${article.slug}`}
+                    className="block h-full rounded-2xl border border-white/10 bg-ink/70 p-6 transition-colors hover:border-innovation/60"
+                  >
+                    <p className="afr-eyebrow text-innovation">News &amp; Events</p>
+                    <h2 className="mt-3 font-display text-xl font-bold text-chalk">
+                      {article.title}
+                    </h2>
+                    {article.summary && (
+                      <p className="mt-3 text-sm leading-6 text-ash">{article.summary}</p>
+                    )}
+                  </Link>
+                </Reveal>
+              ))}
             </div>
-          </Reveal>
+          ) : (
+            <Reveal>
+              <div className="rounded-2xl border border-dashed border-white/15 bg-ink/60 p-8 text-center sm:p-12">
+                <span className="mx-auto flex size-12 items-center justify-center rounded-full border border-innovation/40 bg-innovation/10 text-innovation">
+                  <Newspaper className="size-5" aria-hidden="true" />
+                </span>
+                <h2 className="mt-5 font-display text-2xl font-bold tracking-tight text-chalk">
+                  {newsEmptyState.title}
+                </h2>
+                <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-ash">
+                  {newsEmptyState.body}
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <LinkButton href="/#newsletter" variant="primary">
+                    {newsEmptyState.cta.label}
+                  </LinkButton>
+                  <LinkButton href="/knowledge" variant="outline">
+                    Browse the Knowledge Centre
+                  </LinkButton>
+                </div>
+              </div>
+            </Reveal>
+          )}
 
           {/* What will appear */}
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

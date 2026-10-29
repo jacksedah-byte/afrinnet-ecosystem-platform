@@ -29,6 +29,74 @@ The convex server has a separate set of environment variables that are accessibl
 
 Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
 
+## Clerk CMS Authentication
+
+The CMS lives at `/cms`. It uses a separate Clerk-backed Convex client so CMS
+sessions do not replace existing Convex Auth member sessions. Access is checked
+on the Convex backend using configured admin IDs/emails or verified Clerk role
+claims.
+
+1. Start or select the Convex development deployment with `npx convex dev` and
+   note its `.convex.cloud` URL. Convex provides the corresponding `.convex.site`
+   auth issuer automatically; neither URL is the Vite website URL.
+2. Create a Clerk application. Add its publishable key to the frontend's
+   `.env.local` as `VITE_CLERK_PUBLISHABLE_KEY`, and set `VITE_CONVEX_URL` to
+   the Convex `.convex.cloud` URL. Restart Vite after changing frontend values.
+3. Optional: if you want to authorize through Clerk claims or the
+   `CMS_ADMIN_EMAILS` allowlist, open **Sessions → Customize session token →
+   Claims** and add `"role": "{{user.public_metadata.role}}"` and
+   `"email": "{{user.primary_email_address}}"`. This is a custom claim on the
+   standard Clerk session token used by the Convex integration; adding a
+   separate JWT template does not update that token. If you use
+   `CMS_ADMIN_SUBJECTS` or an administrator record in the CMS instead, no
+   Clerk session-claim changes are needed.
+4. Set `CLERK_JWT_ISSUER_DOMAIN` on the Convex deployment to the Clerk
+   Frontend API URL shown by Clerk, such as
+   `https://your-instance.clerk.accounts.dev`:
+   `npx convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev`.
+   Do not set `CONVEX_SITE_URL`; Convex provides it as a built-in deployment URL.
+5. Grant access by setting `public_metadata.role` to `admin` only for
+   authorized administrators (never let users set this value themselves), by
+   configuring a comma-separated `CMS_ADMIN_EMAILS` or `CMS_ADMIN_SUBJECTS`
+   allowlist on the Convex deployment, or by adding an administrator in the
+   CMS. Clerk user IDs (`subject`) are a reliable allowlist choice when session
+   email claims are unavailable.
+6. Redeploy Convex after setting its environment values.
+
+Copy `.env.example` to `.env.local` and fill in the frontend values. Convex
+environment values must be set on the deployment (for example with
+`npx convex env set NAME VALUE`); they are not read from the Vite frontend.
+The CMS reports which required frontend values are missing.
+
+### CMS features
+
+- Create, edit, draft, publish and delete managed page overrides, news items and
+  knowledge resources. Published page overrides replace the content body at the
+  matching public route while retaining the shared site header and footer.
+- Build page overrides with reorderable hero, text, image, feature-card and
+  call-to-action sections, with an in-editor preview. Existing plain-text pages
+  continue to work until sections are added.
+- Upload and manage JPG, PNG, WebP and GIF images in the protected media
+  library. Images are limited to 8 MB and require alt text; they can be selected
+  directly in page sections.
+- Published news and knowledge items appear on their public listing pages and
+  have generated article routes.
+- Edit global site configuration as JSON, including the announcement bar,
+  navigation menus, primary action, footer links, institutional details and
+  descriptions. Visual controls also customize the public site's brand colors,
+  display/body fonts and corner rounding.
+- Review innovation submissions and enquiries, and update their workflow
+  statuses. View newsletter subscribers and their recorded consent.
+- Add and remove CMS administrator records by Clerk user ID. Deployment
+  allowlists are managed separately in Convex environment settings.
+
+The original website pages continue to render their bundled content unless an
+administrator publishes an override for the route. The builder edits supported
+content sections and theme tokens; changes to application behavior, component
+structure, unsupported page layouts and source-controlled assets still require
+code changes. The media library accepts image files only, not arbitrary
+documents, executable content or video uploads.
+
 
 # Using Authentication (Important!)
 
@@ -36,11 +104,17 @@ You must follow these conventions when using authentication.
 
 ## Auth is already set up.
 
-All convex authentication functions are already set up. The auth currently uses email OTP and anonymous users, but can support more.
+All Convex authentication functions are already set up. The auth currently uses
+email OTP and anonymous users, but can support more. Member sign-in at `/auth`
+uses the `VITE_CONVEX_URL` deployment, not Clerk.
 
 The email OTP configuration is defined in `src/convex/auth/emailOtp.ts`. DO NOT MODIFY THIS FILE.
 
 Also, DO NOT MODIFY THESE AUTH FILES: `src/convex/auth.config.ts` and `src/convex/auth.ts`.
+
+Email OTP delivery requires `VLY_INTEGRATION_KEY` on the Convex deployment.
+If email sign-in fails while guest sign-in works, check the Convex deployment
+logs and confirm this server-side variable is configured.
 
 ## Using Convex Auth on the backend
 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useIntake } from "@/hooks/use-intake";
 import { container } from "./primitives";
 import { Logo } from "./Logo";
-import { footerColumns, footerNotes, siteMeta } from "@/content/site";
+import { useSiteConfiguration } from "@/hooks/use-site-configuration";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -100,6 +100,8 @@ function NewsletterForm() {
 }
 
 export function SiteFooter() {
+  const { footerColumns, footerNotes, siteMeta } = useSiteConfiguration();
+
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-obsidian">
       {/* Subtle network texture */}
@@ -203,6 +205,9 @@ export function SiteFooter() {
             </Link>
             <Link to="/auth" className="transition-colors hover:text-chalk">
               Portal sign-in
+            </Link>
+            <Link to="/cms" className="transition-colors hover:text-chalk">
+              CMS sign-in
             </Link>
           </div>
         </div>

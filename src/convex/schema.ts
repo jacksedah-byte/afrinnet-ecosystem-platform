@@ -2,6 +2,49 @@ import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { Infer, v } from "convex/values";
 
+export const cmsSectionValidator = v.union(
+  v.object({
+    id: v.string(),
+    type: v.literal("hero"),
+    eyebrow: v.optional(v.string()),
+    heading: v.string(),
+    body: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    imageAlt: v.optional(v.string()),
+    primaryLabel: v.optional(v.string()),
+    primaryHref: v.optional(v.string()),
+    secondaryLabel: v.optional(v.string()),
+    secondaryHref: v.optional(v.string()),
+  }),
+  v.object({
+    id: v.string(),
+    type: v.literal("text"),
+    heading: v.optional(v.string()),
+    body: v.string(),
+  }),
+  v.object({
+    id: v.string(),
+    type: v.literal("image"),
+    imageUrl: v.string(),
+    imageAlt: v.string(),
+    caption: v.optional(v.string()),
+  }),
+  v.object({
+    id: v.string(),
+    type: v.literal("features"),
+    heading: v.optional(v.string()),
+    items: v.array(v.object({ title: v.string(), body: v.string() })),
+  }),
+  v.object({
+    id: v.string(),
+    type: v.literal("cta"),
+    heading: v.string(),
+    body: v.optional(v.string()),
+    buttonLabel: v.string(),
+    buttonHref: v.string(),
+  }),
+);
+
 // default user roles. can add / remove based on the project as needed
 export const ROLES = {
   ADMIN: "admin",
@@ -74,6 +117,39 @@ const schema = defineSchema(
       email: v.string(),
       consent: v.boolean(),
     }).index("by_email", ["email"]),
+
+    cmsAdmins: defineTable({
+      subject: v.string(),
+      email: v.optional(v.string()),
+      createdAt: v.number(),
+      createdBy: v.string(),
+    }).index("by_subject", ["subject"]),
+
+    cmsContent: defineTable({
+      type: v.string(),
+      slug: v.string(),
+      path: v.optional(v.string()),
+      title: v.string(),
+      summary: v.optional(v.string()),
+      body: v.string(),
+      sections: v.optional(v.array(cmsSectionValidator)),
+      published: v.boolean(),
+      updatedAt: v.number(),
+      updatedBy: v.string(),
+    })
+      .index("by_type", ["type"])
+      .index("by_type_slug", ["type", "slug"])
+      .index("by_path", ["path"]),
+
+    cmsMedia: defineTable({
+      storageId: v.id("_storage"),
+      fileName: v.string(),
+      contentType: v.string(),
+      size: v.number(),
+      altText: v.string(),
+      createdAt: v.number(),
+      createdBy: v.string(),
+    }).index("by_created", ["createdAt"]),
 
     // tableName: defineTable({
     //   ...

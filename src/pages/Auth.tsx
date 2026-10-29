@@ -295,7 +295,33 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   );
 }
 
+function AuthSetupRequired() {
+  return (
+    <main className="flex min-h-screen items-center justify-center px-6">
+      <Card className="max-w-lg">
+        <CardHeader>
+          <CardTitle>Sign-in setup required</CardTitle>
+          <CardDescription>
+            This website is missing its Convex deployment URL, so email and
+            guest sign-in cannot connect to the authentication service.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-sm text-muted-foreground">
+          Set <code>VITE_CONVEX_URL</code> in <code>.env.local</code> to your
+          Convex deployment URL, then restart the website. For email sign-in,
+          the Convex deployment must also have its email integration configured.
+          See the authentication setup in the README.
+        </CardContent>
+      </Card>
+    </main>
+  );
+}
+
 export default function AuthPage(props: AuthProps) {
+  if (!import.meta.env.VITE_CONVEX_URL) {
+    return <AuthSetupRequired />;
+  }
+
   return (
     <Suspense>
       <Auth {...props} />
