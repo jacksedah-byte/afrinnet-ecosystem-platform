@@ -64,6 +64,10 @@ const schema = defineSchema(
       organisation: v.optional(v.string()),
       subject: v.optional(v.string()),
       message: v.string(),
+      customFields: v.optional(v.array(v.object({
+        label: v.string(),
+        value: v.string(),
+      }))),
       consent: v.boolean(),
       status: v.string(),
     }).index("by_created", ["createdAt"]),

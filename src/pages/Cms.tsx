@@ -425,7 +425,7 @@ export default function Cms() {
 
   const startVisualPageOverride = (path: string) => {
     const preset = pagePresets.find((page) => page.path === path);
-    if (!preset || path === "/") return;
+    if (!preset) return;
     const existing = records?.find((record) => record.path === path && ["page", "news", "resource"].includes(record.type));
     if (existing) {
       setSelectedId(existing._id);
@@ -580,15 +580,6 @@ export default function Cms() {
   const save = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    if (
-      editor.type === "page" &&
-      editor.path &&
-      pagePresets.some((page) => page.path === editor.path) &&
-      !records?.some((record) => record._id === selectedId && record.path === editor.path)
-    ) {
-      setError("That route already belongs to a designed website page. Use the existing-page picker to edit its content, or choose a new route.");
-      return;
-    }
     let content: unknown;
     try {
       content = JSON.parse(editor.content);
@@ -639,6 +630,7 @@ export default function Cms() {
     target?:
       | { kind: "pageBlock"; index: number }
       | { kind: "pageCard"; index: number; cardIndex: number }
+      | { kind: "pageEntry"; index: number; entryIndex: number }
       | { kind: "pageHero" }
       | { kind: "mediaAsset" }
       | { kind: "jsonPath"; path: JsonPath }
@@ -764,6 +756,22 @@ export default function Cms() {
         setEditor({ ...editor, content: JSON.stringify({ ...page, blocks }, null, 2) });
         return;
       }
+      if (target?.kind === "pageEntry") {
+        const blocks = Array.isArray(page.blocks) ? [...page.blocks] : [];
+        const block = blocks[target.index];
+        if (!block || typeof block !== "object" || Array.isArray(block)) {
+          throw new Error("The selected media section no longer exists.");
+        }
+        const entries = Array.isArray((block as Record<string, unknown>).entries)
+          ? [...(block as { entries: Array<Record<string, unknown>> }).entries]
+          : [];
+        const entry = entries[target.entryIndex];
+        if (!entry) throw new Error("The selected media item no longer exists.");
+        entries[target.entryIndex] = { ...entry, imageUrl, storageId, alt: typeof entry.alt === "string" && entry.alt ? entry.alt : file.name };
+        blocks[target.index] = { ...(block as Record<string, unknown>), entries };
+        setEditor({ ...editor, content: JSON.stringify({ ...page, blocks }, null, 2) });
+        return;
+      }
       const blocks = Array.isArray(page.blocks) ? page.blocks : [];
       setEditor({
         ...editor,
@@ -837,6 +845,7 @@ export default function Cms() {
     blockIndex: number,
     mediaType: "image" | "video",
     cardIndex?: number,
+    entryIndex?: number,
   ) => {
     try {
       const page: unknown = JSON.parse(editor.content);
@@ -850,6 +859,16 @@ export default function Cms() {
       const block = blocks[blockIndex];
       if (!block || typeof block !== "object" || Array.isArray(block)) throw new Error("The selected page section no longer exists.");
       const blockRecord = block as Record<string, unknown>;
+      if (entryIndex !== undefined) {
+        const entries = Array.isArray(blockRecord.entries) ? [...blockRecord.entries] : [];
+        const entry = entries[entryIndex];
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) throw new Error("The selected media item no longer exists.");
+        entries[entryIndex] = { ...(entry as Record<string, unknown>), imageUrl: asset.url, storageId: asset.storageId };
+        blocks[blockIndex] = { ...blockRecord, entries };
+        setEditor({ ...editor, content: JSON.stringify({ ...content, blocks }, null, 2) });
+        setError(null);
+        return;
+      }
       if (cardIndex !== undefined) {
         const cards = Array.isArray(blockRecord.cards) ? [...blockRecord.cards] : [];
         const card = cards[cardIndex];
@@ -1059,7 +1078,7 @@ export default function Cms() {
                           {pagePresets.map((page) => <option key={page.path} value={page.path}>{page.title}</option>)}
                         </select>
                       </label>
-                      {canEdit && selectedPagePath && selectedPagePath !== "/" && (
+                      {canEdit && selectedPagePath && (
                         <Button type="button" variant="outline" className="w-full" onClick={() => startVisualPageOverride(selectedPagePath)}>
                           <Plus className="size-4" />Design this page visually
                         </Button>
@@ -1180,9 +1199,10 @@ export default function Cms() {
                   onChange={(content) => setEditor({ ...editor, content })}
                   mediaLibrary={mediaLibrary}
                   onSelectMedia={selectMediaAsset}
-                  onUploadMedia={(file, index, mediaType, cardIndex) => {
+                  onUploadMedia={(file, index, mediaType, cardIndex, entryIndex) => {
                     if (index === -1) return void uploadMedia(file, { kind: "pageHero" }, mediaType);
                     if (cardIndex !== undefined) return void uploadMedia(file, { kind: "pageCard", index, cardIndex }, mediaType);
+                    if (entryIndex !== undefined) return void uploadMedia(file, { kind: "pageEntry", index, entryIndex }, mediaType);
                     return void uploadMedia(file, { kind: "pageBlock", index }, mediaType);
                   }}
                   isUploading={isUploading}
@@ -1478,6 +1498,16 @@ export default function Cms() {
                       <details className="text-sm leading-6">
                         <summary className="cursor-pointer text-muted-foreground">Read enquiry</summary>
                         <p className="mt-2 whitespace-pre-wrap">{item.message}</p>
+                        {(item.customFields ?? []).length > 0 && (
+                          <dl className="mt-3 space-y-2 border-t pt-3">
+                            {(item.customFields ?? []).map((field, fieldIndex) => (
+                              <div key={`${field.label}-${fieldIndex}`}>
+                                <dt className="text-xs font-semibold">{field.label}</dt>
+                                <dd className="whitespace-pre-wrap text-sm">{field.value || "—"}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        )}
                       </details>
                       <div className="flex items-center gap-2">
                         <select aria-label={`Status for ${item.name}`} value={item.status} onChange={(event) => void runInboxAction(() => setEnquiryStatus({ id: item._id, status: event.target.value as "received" | "reviewing" | "contacted" | "closed" }))} className="h-9 rounded-md border bg-background px-2 text-sm">

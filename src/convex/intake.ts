@@ -98,12 +98,22 @@ export const sendEnquiry = mutation({
     organisation: v.optional(v.string()),
     subject: v.optional(v.string()),
     message: v.string(),
+    customFields: v.optional(v.array(v.object({
+      label: v.string(),
+      value: v.string(),
+    }))),
     consent: v.boolean(),
   },
   handler: async (ctx, args) => {
     const name = clean(args.name, 120);
     const email = clean(args.email, 200);
     const message = clean(args.message, 4000);
+    if ((args.customFields?.length ?? 0) > 20) throw new Error("A form can include up to 20 additional fields.");
+    const customFields = args.customFields?.map(({ label, value }) => {
+      const cleanLabel = clean(label, 80);
+      if (!cleanLabel) throw new Error("Every additional form field needs a label.");
+      return { label: cleanLabel, value: clean(value, 2000) };
+    });
 
     if (!args.type) throw new Error("Please choose an enquiry type.");
     if (name.length < 2) throw new Error("Please provide your name.");
@@ -119,6 +129,7 @@ export const sendEnquiry = mutation({
       organisation: args.organisation ? clean(args.organisation, 200) : undefined,
       subject: args.subject ? clean(args.subject, 200) : undefined,
       message,
+      customFields,
       consent: true,
       status: "received",
     });

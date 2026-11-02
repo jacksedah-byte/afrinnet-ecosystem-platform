@@ -58,6 +58,46 @@ function RouteLoading() {
   );
 }
 
+function CmsPageMetadata({ title, content }: { title: string; content: unknown }) {
+  const page = content && typeof content === "object" && !Array.isArray(content)
+    ? content as { seoTitle?: string; seoDescription?: string; noIndex?: boolean; introduction?: string }
+    : {};
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = page.seoTitle?.trim() || title;
+    const changes: Array<{ element: HTMLMetaElement; created: boolean; previous: string | null }> = [];
+    const updateMeta = (name: string, value: string, attribute: "name" | "property" = "name") => {
+      let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${name}"]`);
+      const created = !element;
+      if (!element) {
+        element = document.createElement("meta");
+        element.setAttribute(attribute, name);
+        document.head.append(element);
+      }
+      changes.push({ element, created, previous: element.getAttribute("content") });
+      element.content = value;
+    };
+    const description = page.seoDescription?.trim() || page.introduction?.trim();
+    if (description) {
+      updateMeta("description", description);
+      updateMeta("og:description", description, "property");
+    }
+    if (page.seoTitle?.trim()) updateMeta("og:title", page.seoTitle.trim(), "property");
+    if (page.noIndex) updateMeta("robots", "noindex,nofollow");
+    return () => {
+      document.title = previousTitle;
+      for (const { element, created, previous } of changes) {
+        if (created) element.remove();
+        else if (previous === null) element.removeAttribute("content");
+        else element.content = previous;
+      }
+    };
+  }, [page.introduction, page.noIndex, page.seoDescription, page.seoTitle, title]);
+
+  return null;
+}
+
 /** Wraps every public page with the shared header, footer and scroll manager. */
 function Public({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -68,6 +108,7 @@ function Public({ children }: { children: React.ReactNode }) {
     (content.content as Record<string, unknown>).preserveExistingPage === true;
   return (
     <SiteLayout>
+      {content && <CmsPageMetadata title={content.title} content={content.content} />}
       {content ? (
         <>
           <CmsPageContent title={content.title} content={content.content} />
@@ -85,6 +126,7 @@ function DynamicCmsRoute() {
   if (!content) return <NotFound />;
   return (
     <SiteLayout>
+      <CmsPageMetadata title={content.title} content={content.content} />
       <CmsPageContent title={content.title} content={content.content} />
     </SiteLayout>
   );
@@ -174,6 +216,13 @@ function SetupRequired() {
 
 function RouteSyncer() {
   const location = useLocation();
+  const publishedPage = useQuery(api.cms.getPublishedByPath, { path: location.pathname });
+  const seoTitle = publishedPage?.content &&
+    typeof publishedPage.content === "object" &&
+    !Array.isArray(publishedPage.content) &&
+    typeof (publishedPage.content as Record<string, unknown>).seoTitle === "string"
+      ? (publishedPage.content as Record<string, string>).seoTitle.trim()
+      : "";
   useEffect(() => {
     window.parent.postMessage(
       { type: "iframe-route-change", path: location.pathname },
@@ -227,8 +276,8 @@ function RouteSyncer() {
           : location.pathname.startsWith("/engage/")
             ? "Engage with AFRINNET — AFRINNET Foundation"
             : "AFRINNET Foundation");
-    document.title = base;
-  }, [location.pathname]);
+    document.title = seoTitle || base;
+  }, [location.pathname, seoTitle]);
 
   return null;
 }
