@@ -14,7 +14,7 @@ Before production sign-in can work, configure the production Clerk publishable k
 
 ### 1. Deploy the production Convex backend
 
-The public site reads published CMS content when available and otherwise uses the content included in this repository. A blank production deployment is sufficient for the initial public site. Clerk is intentionally omitted from the first public-only backend deployment; CMS and member-account operations are unavailable in the public-first frontend. Add the Clerk provider to `src/convex/auth.config.ts` and configure its production issuer only when production Clerk is ready.
+The public site reads published CMS content when available and otherwise uses the content included in this repository. The public-first backend deployment omitted Clerk; the production Clerk provider is restored in `src/convex/auth.config.ts`. Before redeploying, configure `CLERK_JWT_ISSUER_DOMAIN` and `CMS_ADMIN_USER_IDS` on the production Convex deployment. The public-first frontend still intentionally disables online forms and account/CMS routes; use the full production build after these backend settings and the production publishable key are configured.
 
 The current workspace's Convex CLI does not have access to `tidy-ox-557`, so use a production-only deploy key through GitHub Actions:
 
@@ -64,7 +64,7 @@ Do not put a Clerk secret key in the Vite environment or in this repository. Onl
 
 ### 2. Configure and redeploy the production Convex backend
 
-Once a production Clerk instance exists, configure `CLERK_JWT_ISSUER_DOMAIN` and `CMS_ADMIN_USER_IDS` on `tidy-ox-557`. The owner ID must belong to the same **production** Clerk instance as the publishable key and JWT issuer.
+Configure `CLERK_JWT_ISSUER_DOMAIN` and `CMS_ADMIN_USER_IDS` on `tidy-ox-557`. For the Clerk Frontend API URL `https://clerk.afrinnet.com`, set `CLERK_JWT_ISSUER_DOMAIN` to exactly `https://clerk.afrinnet.com` (do not include `CLERK_FRONTEND_API_URL=` in the value). Set `CMS_ADMIN_USER_IDS` to the production user ID(s), comma-separated. The owner ID must belong to the same **production** Clerk instance as the publishable key and JWT issuer.
 
 ```sh
 CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex env set CLERK_JWT_ISSUER_DOMAIN
