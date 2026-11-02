@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "convex codegen && tsc -b && vite build",
+    "build:production": "node scripts/build-production.mjs",
     "lint": "eslint .",
     "convex:dev": "convex dev",
     "convex:codegen": "convex codegen",

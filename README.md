@@ -23,9 +23,9 @@ Link a Convex development deployment before building. Convex API types are gener
 
 ## DirectAdmin deployment
 
-This repository builds a static Vite single-page application. Run `npm run build` and upload the contents of `dist/` (including the hidden `.htaccess` file) into the domain's `public_html/` directory in DirectAdmin. The included Apache rewrite rule serves `index.html` for application routes such as `/cms` when opened directly or refreshed.
+This repository builds a static Vite single-page application. Follow the [production cutover handover](./DEPLOYMENT_HANDOVER.md) before building or uploading. Use `npm run build:production` to reject test Clerk keys and a Convex URL matching the local development deployment. Upload the contents of `dist/` (including the hidden `.htaccess` file) into the domain's `public_html/` directory in DirectAdmin. The included Apache rewrite rule serves `index.html` for application routes such as `/cms` when opened directly or refreshed.
 
-Set `VITE_CONVEX_URL` and `VITE_CLERK_PUBLISHABLE_KEY` for the intended production services before building; Vite embeds these values in the generated frontend. Do not upload a build made with development service values to the live website. Deploy the Convex functions and configure the production Clerk issuer and CMS admin allowlist on the matching production Convex deployment before testing live sign-in.
+Vite embeds the Convex URL and Clerk publishable key in the generated frontend. Never upload a build made with development service values. Deploy the Convex functions and configure the production Clerk issuer and CMS admin allowlist on the matching production Convex deployment before testing live sign-in.
 
 ## Environment Variables
 
