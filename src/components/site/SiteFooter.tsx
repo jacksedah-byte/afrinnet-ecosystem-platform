@@ -7,6 +7,9 @@ import { useIntake } from "@/hooks/use-intake";
 import { container } from "./primitives";
 import { Logo } from "./Logo";
 import { useSiteSettings } from "@/hooks/use-site-settings";
+import { FeatureUnavailable } from "./FeatureUnavailable";
+
+const publicLaunchMode = import.meta.env.VITE_PUBLIC_LAUNCH_MODE === "true";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -159,7 +162,14 @@ export function SiteFooter() {
               announcements and partnership opportunities.
             </p>
           </div>
-          <NewsletterForm />
+          {publicLaunchMode ? (
+            <FeatureUnavailable title="Newsletter sign-up is coming later">
+              The public website is being launched first. Newsletter sign-up
+              will be enabled after the website services are connected.
+            </FeatureUnavailable>
+          ) : (
+            <NewsletterForm />
+          )}
         </div>
       </section>
 

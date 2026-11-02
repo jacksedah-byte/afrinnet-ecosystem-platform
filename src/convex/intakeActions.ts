@@ -119,7 +119,7 @@ export const submitInnovation = action({
     );
     const emailNotice = await notifyInbox(
       `New AFRINNET innovation submission: ${saved.reference}`,
-      `A new innovation submission has been saved in the AFRINNET CMS inbox.\nReference: ${saved.reference}\nReview it at ${process.env.AFRINNET_SITE_URL ?? "https://afrinnet.org"}/cms.`,
+      `A new innovation submission has been saved in the AFRINNET CMS inbox.\nReference: ${saved.reference}\nReview it at ${process.env.AFRINNET_SITE_URL ?? "https://afrinnet.com"}/cms.`,
     );
     return { ...saved, emailNotice };
   },
@@ -134,7 +134,7 @@ export const sendEnquiry = action({
     const saved = await ctx.runMutation(internal.intake.recordEnquiry, args);
     const emailNotice = await notifyInbox(
       `New AFRINNET enquiry: ${clean(args.type, 60)}`,
-      `A new enquiry has been saved in the AFRINNET CMS inbox.\nType: ${clean(args.type, 60)}\nReview it at ${process.env.AFRINNET_SITE_URL ?? "https://afrinnet.org"}/cms.`,
+      `A new enquiry has been saved in the AFRINNET CMS inbox.\nType: ${clean(args.type, 60)}\nReview it at ${process.env.AFRINNET_SITE_URL ?? "https://afrinnet.com"}/cms.`,
     );
     return { ...saved, emailNotice };
   },

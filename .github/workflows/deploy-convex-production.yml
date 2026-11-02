@@ -1,0 +1,28 @@
+name: Deploy Convex production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_PRODUCTION_DEPLOY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify deployment key is configured
+        run: |
+          if [ -z "$CONVEX_DEPLOY_KEY" ]; then
+            echo "::error::Add the production-only Convex deploy key as CONVEX_PRODUCTION_DEPLOY_KEY."
+            exit 1
+          fi
+      - name: Deploy production Convex functions
+        run: npx convex deploy --message "Initialize public-first production site"

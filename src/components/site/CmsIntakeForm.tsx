@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { defaultCmsFormFields, type CmsFormData } from "@/components/site/cms-form-schema";
+import { FeatureUnavailable } from "./FeatureUnavailable";
+
+const publicLaunchMode = import.meta.env.VITE_PUBLIC_LAUNCH_MODE === "true";
 
 export function CmsIntakeForm({ form }: { form: CmsFormData }) {
   const { sendEnquiry, submitInnovation, subscribeNewsletter, readError } = useIntake();
@@ -105,7 +108,14 @@ export function CmsIntakeForm({ form }: { form: CmsFormData }) {
     <section className="rounded-xl border bg-card p-5 sm:p-8">
       {form.heading && <h2 className="font-display text-2xl font-bold tracking-tight">{form.heading}</h2>}
       {form.body && <p className="mt-3 whitespace-pre-line text-sm leading-6 text-muted-foreground">{form.body}</p>}
-      {sent ? (
+      {publicLaunchMode ? (
+        <div className="mt-6">
+          <FeatureUnavailable title="Online forms are temporarily unavailable">
+            AFRINNET is launching the public website first. This form will be
+            enabled when the website services are connected.
+          </FeatureUnavailable>
+        </div>
+      ) : sent ? (
         <p role="status" className="mt-6 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm">
           {form.successMessage || "Thank you. Your message has been received."}{" "}
           {deliveryNotice}

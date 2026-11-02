@@ -10,8 +10,11 @@ if (!convexUrl) {
 }
 
 const siteUrl = process.env.VITE_SITE_URL || defaultSiteUrl;
-const client = new ConvexHttpClient(convexUrl);
-const cmsEntries = await client.query(api.cms.sitemapEntries, {});
+const staticOnly = process.argv.includes("--static-only");
+const client = staticOnly ? null : new ConvexHttpClient(convexUrl);
+const cmsEntries = staticOnly
+  ? []
+  : await client.query(api.cms.sitemapEntries, {});
 const sourceSitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
 const output = createSitemap({
   siteUrl,

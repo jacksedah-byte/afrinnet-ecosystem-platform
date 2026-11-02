@@ -14,6 +14,9 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Callout, Container, LinkButton, StatusBadge } from "@/components/site/primitives";
 import { useIntake } from "@/hooks/use-intake";
+import { FeatureUnavailable } from "@/components/site/FeatureUnavailable";
+
+const publicLaunchMode = import.meta.env.VITE_PUBLIC_LAUNCH_MODE === "true";
 
 const DRAFT_KEY = "afrinnet-submission-draft";
 
@@ -286,6 +289,29 @@ export default function SubmitInnovation() {
     () => ((step + 1) / STEPS.length) * 100,
     [step],
   );
+
+  if (publicLaunchMode) {
+    return (
+      <>
+        <PageHeader
+          crumbs={[{ label: "Get Involved" }, { label: "Submit an Innovation" }]}
+          eyebrow="Get Involved"
+          title="Submit an Innovation"
+          lede="AFRINNET's innovation submission service is being connected."
+        />
+        <section className="bg-obsidian py-12 sm:py-16">
+          <Container>
+            <div className="mx-auto max-w-3xl">
+              <FeatureUnavailable title="Innovation submissions are coming later">
+                The public website is being launched first. Online submissions
+                will be enabled after the website services are connected.
+              </FeatureUnavailable>
+            </div>
+          </Container>
+        </section>
+      </>
+    );
+  }
 
   /* ------------------------------ Receipt ------------------------------ */
   if (reference) {

@@ -5,7 +5,7 @@ import { CmsPageContent } from "@/components/site/CmsPageContent";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
 import { ClerkProvider, useAuth as useClerkAuth } from "@clerk/react";
-import { ConvexReactClient } from "convex/react";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -159,7 +159,7 @@ const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
 
 function SetupRequired() {
   const missing = [
-    !clerkPublishableKey && "VITE_CLERK_PUBLISHABLE_KEY",
+    !publicLaunchMode && !clerkPublishableKey && "VITE_CLERK_PUBLISHABLE_KEY",
     !convexUrl && "VITE_CONVEX_URL",
   ].filter((name): name is string => typeof name === "string");
 
@@ -176,6 +176,25 @@ function SetupRequired() {
         </ul>
       </section>
     </main>
+  );
+}
+
+const publicLaunchMode = import.meta.env.VITE_PUBLIC_LAUNCH_MODE === "true";
+
+function PublicLaunchNotice({ title }: { title: string }) {
+  return (
+    <SiteLayout>
+      <main className="flex min-h-[65vh] items-center justify-center bg-obsidian px-6 py-16">
+        <section className="max-w-xl rounded-2xl border border-white/10 bg-ink/70 p-8 text-center text-chalk">
+          <p className="afr-eyebrow text-innovation">AFRINNET website</p>
+          <h1 className="mt-4 font-display text-3xl font-bold">{title}</h1>
+          <p className="mt-4 text-sm leading-6 text-ash">
+            This feature is being connected and will be available in a later
+            release. No development accounts or data are connected to this site.
+          </p>
+        </section>
+      </main>
+    </SiteLayout>
   );
 }
 
@@ -337,19 +356,9 @@ function RouteSyncer() {
   return null;
 }
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RootErrorBoundary>
-      {!convex || !clerkPublishableKey ? (
-        <SetupRequired />
-      ) : (
-        <>
-          <ToolbarErrorBoundary>
-            <VlyToolbar />
-          </ToolbarErrorBoundary>
-          <ClerkProvider publishableKey={clerkPublishableKey}>
-            <ConvexProviderWithClerk client={convex} useAuth={useClerkAuth}>
-          <BrowserRouter>
+function AppRoutes() {
+  return (
+    <BrowserRouter>
           <RouteSyncer />
           <Suspense fallback={<RouteLoading />}>
             <Routes>
@@ -392,40 +401,79 @@ createRoot(document.getElementById("root")!).render(
               {/* Authentication and member portal */}
               <Route
                 path="/auth"
-                element={<AuthPage redirectAfterAuth="/dashboard" />}
+                element={
+                  publicLaunchMode ? (
+                    <PublicLaunchNotice title="Sign-in is not available yet" />
+                  ) : (
+                    <AuthPage redirectAfterAuth="/dashboard" />
+                  )
+                }
               />
               <Route
                 path="/dashboard"
-                element={
+                element={publicLaunchMode ? (
+                  <PublicLaunchNotice title="The member portal is coming later" />
+                ) : (
                   <RequireAuth
                     title="Sign in to view your AFRINNET account"
                     description="Your submissions, references and portal modules live here."
                   >
                     <Dashboard />
                   </RequireAuth>
-                }
+                )}
               />
               <Route
                 path="/cms"
-                element={
+                element={publicLaunchMode ? (
+                  <PublicLaunchNotice title="The content manager is being connected" />
+                ) : (
                   <RequireAuth
                     title="Sign in to manage website content"
                     description="The AFRINNET content workspace is restricted to approved administrators."
                   >
                     <Cms />
                   </RequireAuth>
-                }
+                )}
               />
 
               <Route path="*" element={<DynamicCmsRoute />} />
             </Routes>
           </Suspense>
-              </BrowserRouter>
+    </BrowserRouter>
+  );
+}
+
+function Application() {
+  if (!convex || (!publicLaunchMode && !clerkPublishableKey)) {
+    return <SetupRequired />;
+  }
+  if (publicLaunchMode) {
+    return (
+      <ConvexProvider client={convex}>
+        <AppRoutes />
+        <Toaster />
+      </ConvexProvider>
+    );
+  }
+  return (
+    <>
+      <ToolbarErrorBoundary>
+        <VlyToolbar />
+      </ToolbarErrorBoundary>
+      <ClerkProvider publishableKey={clerkPublishableKey}>
+        <ConvexProviderWithClerk client={convex} useAuth={useClerkAuth}>
+              <AppRoutes />
               <Toaster />
-            </ConvexProviderWithClerk>
-          </ClerkProvider>
-        </>
-      )}
+        </ConvexProviderWithClerk>
+      </ClerkProvider>
+    </>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <RootErrorBoundary>
+      <Application />
     </RootErrorBoundary>
   </StrictMode>,
 );

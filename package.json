@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "convex codegen && tsc -b && vite build",
+    "build": "convex codegen && npm run build:client",
+    "build:client": "tsc -b && vite build",
     "build:production": "node scripts/build-production.mjs",
+    "build:public": "node scripts/build-production.mjs --public-launch",
     "test": "node --test scripts/*.test.mjs",
     "lint": "eslint .",
     "convex:dev": "convex dev",

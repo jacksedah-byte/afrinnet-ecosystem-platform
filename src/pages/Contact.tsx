@@ -7,6 +7,9 @@ import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, LinkButton } from "@/components/site/primitives";
 import { useIntake } from "@/hooks/use-intake";
 import { useSiteSettings } from "@/hooks/use-site-settings";
+import { FeatureUnavailable } from "@/components/site/FeatureUnavailable";
+
+const publicLaunchMode = import.meta.env.VITE_PUBLIC_LAUNCH_MODE === "true";
 
 const ENQUIRY_TYPES = [
   {
@@ -162,7 +165,12 @@ export default function Contact({
           <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:gap-14">
             {/* Form */}
             <div className="rounded-2xl border border-white/10 bg-ink/70 p-6 sm:p-8">
-              {sent ? (
+              {publicLaunchMode ? (
+                <FeatureUnavailable title="Contact form coming soon">
+                  The public website is being launched first. Please check back
+                  later to send an enquiry through this form.
+                </FeatureUnavailable>
+              ) : sent ? (
                 <div className="py-8 text-center" role="status">
                   <span className="mx-auto flex size-12 items-center justify-center rounded-full border border-innovation/50 bg-innovation/10 text-innovation">
                     <Send className="size-5" aria-hidden="true" />

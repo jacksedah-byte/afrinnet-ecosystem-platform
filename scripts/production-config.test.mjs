@@ -18,6 +18,29 @@ test("accepts the confirmed production target and secure site origin", () => {
   assert.equal(validateProductionConfig(validConfig), null);
 });
 
+test("allows a public-only production build without Clerk", () => {
+  assert.equal(
+    validateProductionConfig({
+      ...validConfig,
+      clerkKey: undefined,
+      publicLaunch: true,
+    }),
+    null,
+  );
+});
+
+test("public-only build still requires the correct production Convex target", () => {
+  assert.match(
+    validateProductionConfig({
+      ...validConfig,
+      clerkKey: undefined,
+      publicLaunch: true,
+      deployment: "dev:energized-salamander-23",
+    }),
+    /CONVEX_DEPLOYMENT must be prod:tidy-ox-557/,
+  );
+});
+
 test("rejects a development deployment even when the frontend URL is production", () => {
   assert.match(
     validateProductionConfig({ ...validConfig, deployment: "dev:energized-salamander-23" }),

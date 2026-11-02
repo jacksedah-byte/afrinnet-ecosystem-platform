@@ -1,6 +1,6 @@
-# AFRINNET production readiness and cutover
+# AFRINNET public-first launch and production cutover
 
-This handover describes the repo's required production configuration. It does not deploy the site, change DNS, remove Vercel, or modify a domain.
+This handover describes the public-first launch at `afrinnet.com`. The live domain currently returns a Vercel `DEPLOYMENT_NOT_FOUND` response. No DNS records or DirectAdmin files have been changed. The public-first build intentionally leaves Clerk sign-in, the CMS, member portal and all online forms unavailable until production authentication and services are configured.
 
 ## Confirmed deployment target
 
@@ -10,22 +10,61 @@ The local workspace remains linked to development deployment `energized-salamand
 
 Before production sign-in can work, configure the production Clerk publishable key, Clerk issuer domain, and the correct production Clerk owner user ID. Never put Clerk secret keys or email-provider API keys in the frontend or repository.
 
-## Production setup
+## Public-first launch
+
+### 1. Deploy the production Convex backend
+
+The public site reads published CMS content when available and otherwise uses the content included in this repository. A blank production deployment is sufficient for the initial public site. The current backend auth configuration keeps Clerk disabled until `CLERK_JWT_ISSUER_DOMAIN` is set; CMS operations remain protected and the public-first frontend disables admin routes.
+
+The current workspace's Convex CLI does not have access to `tidy-ox-557`, so use a production-only deploy key through GitHub Actions:
+
+1. In the [Convex production dashboard](https://dashboard.convex.dev/t/jack-seddah/afrinnet-cms/tidy-ox-557), open **Settings → Deploy Keys** and create a deploy key for the `tidy-ox-557` production deployment. Do not copy a development key.
+2. In [GitHub repository Actions secrets](https://github.com/jacksedah-byte/afrinnet-ecosystem-platform/settings/secrets/actions), create a repository secret named `CONVEX_PRODUCTION_DEPLOY_KEY` and paste the key there. Do not send it in chat.
+3. Open the repository's [Actions tab](https://github.com/jacksedah-byte/afrinnet-ecosystem-platform/actions), select **Deploy Convex production**, and choose **Run workflow**.
+4. Confirm the workflow succeeds before uploading the website files.
+
+```sh
+CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex deploy
+```
+
+The CLI command above is the equivalent if you later have a CLI session authenticated to the correct production project. The GitHub workflow's deploy key is bound to the deployment you create it for. This deploy creates the schema and functions; it does not copy development content, uploads, or account records.
+
+### 2. Build the public-only site
+
+```sh
+export CONVEX_DEPLOYMENT='prod:tidy-ox-557'
+export VITE_CONVEX_URL='https://tidy-ox-557.convex.cloud'
+export VITE_SITE_URL='https://afrinnet.com'
+npm run build:public
+```
+
+This mode does not require Clerk and explicitly leaves `/auth`, `/dashboard`, `/cms`, contact/innovation forms, and newsletter sign-up unavailable. It never uses the development Convex deployment. Verify the build succeeds and `dist/.htaccess` exists before upload.
+
+### 3. Upload through DirectAdmin
+
+1. Sign in to DirectAdmin yourself and open the domain `afrinnet.com`'s **File Manager**.
+2. Before replacing anything, download a backup of that domain's current `public_html` directory. Do not delete the backup.
+3. Upload the **contents** of `dist/` (including `.htaccess`) into `public_html`. Do not upload `.env.local`, source files, or `node_modules`.
+4. Test `https://afrinnet.com/`, `/about`, and `/contact`, including direct route refreshes. The forms and admin routes should clearly say they are not available yet.
+
+I cannot access your DirectAdmin account from this workspace. Do not send passwords, FTP credentials, or account codes here. If you want the domain to stop showing the current Vercel 404 and resolve to DirectAdmin, the DNS records must point at the DirectAdmin server. Find the hosting server IP in DirectAdmin's **Account Manager → Domain Setup** or ask the host, then set the domain's apex A record and `www` record as instructed by the host. This is a DNS cutover and should be done only after the DirectAdmin files are uploaded and tested on the host's preview/staging URL. Keep the current DNS values recorded for rollback.
+
+## Full production setup (later)
 
 ### 1. Configure production Clerk
 
 In the production Clerk application:
 
-1. Add the final website origin (for example `https://afrinnet.com`) to Clerk's allowed origins and configure the production sign-in/sign-up redirect URLs.
+1. Add `https://afrinnet.com` to Clerk's allowed origins and configure the production sign-in/sign-up redirect URLs.
 2. Create or enable the JWT template named `convex` with application ID `convex`, as required by `src/convex/auth.config.ts`.
 3. Record the exact issuer domain and production publishable key. Use the Clerk **production** instance, not a development/test instance.
 4. Confirm the CMS owner's user ID in that same production instance.
 
 Do not put a Clerk secret key in the Vite environment or in this repository. Only the publishable key belongs in the frontend.
 
-### 2. Configure and deploy the production Convex backend
+### 2. Configure and redeploy the production Convex backend
 
-Use the Convex project dashboard to configure `CLERK_JWT_ISSUER_DOMAIN` and `CMS_ADMIN_USER_IDS` on `tidy-ox-557`. The owner ID must belong to the same **production** Clerk instance as the publishable key and JWT issuer. Do not deploy until these values are confirmed.
+Once a production Clerk instance exists, configure `CLERK_JWT_ISSUER_DOMAIN` and `CMS_ADMIN_USER_IDS` on `tidy-ox-557`. The owner ID must belong to the same **production** Clerk instance as the publishable key and JWT issuer.
 
 ```sh
 CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex env set CLERK_JWT_ISSUER_DOMAIN
@@ -40,7 +79,7 @@ Then run the production deploy:
 CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex deploy
 ```
 
-Before confirming, verify that the CLI names `tidy-ox-557` as the **production** target. If it names a different project or deployment, cancel. This first deploy creates the application's tables and functions on that deployment; it does not copy development content or uploaded files. The dashboard reported no backup, so confirm that the deployment is new and has no production records before proceeding.
+Before confirming, verify that the CLI names `tidy-ox-557` as the **production** target. If it names a different project or deployment, cancel. This deploy updates the application's tables and functions; it does not copy development content or uploaded files.
 
 ### 3. Build the production website safely
 
@@ -50,12 +89,11 @@ Set the production frontend values in the shell that will build the site:
 export VITE_CLERK_PUBLISHABLE_KEY='pk_live_...'
 export VITE_CONVEX_URL='https://tidy-ox-557.convex.cloud'
 export CONVEX_DEPLOYMENT='prod:tidy-ox-557'
-# Set this only to the confirmed public site origin; otherwise existing default is afrinnet.org.
-export VITE_SITE_URL='https://afrinnet.org'
+export VITE_SITE_URL='https://afrinnet.com'
 npm run build:production
 ```
 
-`build:production` requires the production Clerk key, exact Convex URL, and deployment selector to agree. It compiles the frontend and then queries the deployed CMS sitemap function to include published, indexable CMS routes. It fails if the backend query cannot be reached. The regular `npm run build` is for development only.
+`build:production` requires the production Clerk key, exact Convex URL, and deployment selector to agree. It compiles the full frontend and then queries the deployed CMS sitemap function to include published, indexable CMS routes. It fails if the backend query cannot be reached.
 
 The required verification before upload is:
 
@@ -75,14 +113,9 @@ The app supports Resend notifications after an enquiry, innovation submission, o
 
 If these values are absent or delivery fails, the record is still saved in Convex, the submitter is told the alert was not sent, and the failure is logged. Test with an approved recipient before launch. Newsletter campaign delivery is not implemented. When Resend is configured, signup confirmation email includes an unsubscribe link and advertises the Convex one-click unsubscribe endpoint; users can also request removal through the contact form.
 
-### 5. Upload to DirectAdmin
+### 5. Redeploy and restore full site features
 
-1. Back up the current `public_html` contents before replacing anything.
-2. Upload the **contents** of `dist/`, including `.htaccess`, into the intended domain's `public_html/`. Do not upload `.env.local`, source files, or `node_modules`.
-3. Keep the existing DNS configuration unchanged unless a separate DNS change is explicitly requested.
-4. If DirectAdmin's web server does not honor Apache `.htaccess` rewrites, configure its SPA fallback so unknown paths serve `index.html`; otherwise `/cms` may work from a navigation click but fail on direct load or refresh.
-
-### 6. Verify the live cutover
+Run `npm run build:production`, then upload its `dist/` contents to DirectAdmin using the same backup procedure above. Verify CMS login, authorized/unauthorized staff access, forms, unsubscribe, uploads, and direct route refreshes.
 
 Using the final HTTPS website origin:
 

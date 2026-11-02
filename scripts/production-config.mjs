@@ -1,5 +1,5 @@
 export const productionDeployment = "prod:tidy-ox-557";
-export const defaultSiteUrl = "https://afrinnet.org";
+export const defaultSiteUrl = "https://afrinnet.com";
 
 export function validateProductionConfig({
   clerkKey,
@@ -7,8 +7,9 @@ export function validateProductionConfig({
   developmentUrl,
   deployment,
   siteUrl,
+  publicLaunch = false,
 }) {
-  if (!clerkKey?.startsWith("pk_live_")) {
+  if (!publicLaunch && !clerkKey?.startsWith("pk_live_")) {
     return "set VITE_CLERK_PUBLISHABLE_KEY to the production Clerk publishable key (pk_live_...).";
   }
 
@@ -24,7 +25,7 @@ export function validateProductionConfig({
   ) {
     return "VITE_CONVEX_URL must be an HTTPS Convex cloud URL.";
   }
-  if (developmentUrl) {
+  if (developmentUrl && !publicLaunch) {
     try {
       if (new URL(developmentUrl).origin === productionUrl.origin) {
         return "VITE_CONVEX_URL still points to the local development deployment.";
