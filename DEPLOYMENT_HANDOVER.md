@@ -1,24 +1,16 @@
-# AFRINNET production cutover handover
+# AFRINNET production readiness and cutover
 
-This is the deployment checklist for hosting this repository on the AFRINNET domain through DirectAdmin. It does not change DNS or deploy anything by itself.
+This handover describes the repo's required production configuration. It does not deploy the site, change DNS, remove Vercel, or modify a domain.
 
-## Readiness checked on 2 November 2026
+## Confirmed deployment target
 
-- The Codespaces preview uses the development Convex deployment `energized-salamander-23` and a test Clerk publishable key. Do not upload its existing build to the live site.
-- The project's production Convex deployment is `hidden-albatross-712` (`https://hidden-albatross-712.convex.cloud`).
-- Production currently has no database tables and no deployed CMS functions; `cms:getAccess` is not present.
-- Production has `CMS_ADMIN_USER_IDS` configured, but `CLERK_JWT_ISSUER_DOMAIN` is missing. The existing allowlist has not been verified against the production Clerk account.
-- The development database has eight published built-in content modules, two draft records (`site` navigation and `site-settings`), two stored files, and no CMS staff entries or form submissions. Do not copy development records or uploads as part of this cutover unless they are specifically needed.
-- The production deploy and the DirectAdmin upload have **not** been performed. No domain or DNS settings have been changed.
+On 2 November 2026, the project owner identified Convex production deployment `tidy-ox-557` (`https://tidy-ox-557.convex.cloud`, US East / N. Virginia). The Convex dashboard showed **Never deployed** and **No backup yet**. The production functions/schema have not been deployed by this handover, and account settings have not been independently inspected.
 
-## What is needed before production can work
+The local workspace remains linked to development deployment `energized-salamander-23` and uses a test Clerk key. Its local build is not suitable for production.
 
-1. Access to the production Clerk application and the production Convex deployment.
-2. The production Clerk publishable key (`pk_live_...`) and its issuer domain.
-3. The Clerk production user ID that should own the CMS. A test-instance Clerk user ID may differ from its production user ID.
-4. DirectAdmin access to the intended domain's `public_html` directory. No FTP/DirectAdmin credentials are stored in this repository.
+Before production sign-in can work, configure the production Clerk publishable key, Clerk issuer domain, and the correct production Clerk owner user ID. Never put Clerk secret keys or email-provider API keys in the frontend or repository.
 
-## Cutover steps
+## Production setup
 
 ### 1. Configure production Clerk
 
@@ -33,22 +25,22 @@ Do not put a Clerk secret key in the Vite environment or in this repository. Onl
 
 ### 2. Configure and deploy the production Convex backend
 
-The project's production deployment is `hidden-albatross-712`. Set the Clerk issuer and the actual production CMS owner ID on that deployment:
+Use the Convex project dashboard to configure `CLERK_JWT_ISSUER_DOMAIN` and `CMS_ADMIN_USER_IDS` on `tidy-ox-557`. The owner ID must belong to the same **production** Clerk instance as the publishable key and JWT issuer. Do not deploy until these values are confirmed.
 
 ```sh
-npx convex env set CLERK_JWT_ISSUER_DOMAIN --deployment prod
-npx convex env set CMS_ADMIN_USER_IDS --deployment prod
+CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex env set CLERK_JWT_ISSUER_DOMAIN
+CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex env set CMS_ADMIN_USER_IDS
 ```
 
 Each command prompts for its value. Enter the exact production Clerk issuer URL, then one or more comma-separated production Clerk user IDs. Do not use the test user ID unless it is also verified in the production Clerk instance.
 
-Then run the production deploy interactively:
+Then run the production deploy:
 
 ```sh
-npx convex deploy
+CONVEX_DEPLOYMENT=prod:tidy-ox-557 npx convex deploy
 ```
 
-Before confirming, verify that the CLI names `hidden-albatross-712` as the **production** target. If it names a different project or deployment, cancel. This deploy publishes the current Convex schema and functions; it does not copy the development database's content or uploaded files.
+Before confirming, verify that the CLI names `tidy-ox-557` as the **production** target. If it names a different project or deployment, cancel. This first deploy creates the application's tables and functions on that deployment; it does not copy development content or uploaded files. The dashboard reported no backup, so confirm that the deployment is new and has no production records before proceeding.
 
 ### 3. Build the production website safely
 
@@ -56,11 +48,14 @@ Set the production frontend values in the shell that will build the site:
 
 ```sh
 export VITE_CLERK_PUBLISHABLE_KEY='pk_live_...'
-export VITE_CONVEX_URL='https://hidden-albatross-712.convex.cloud'
+export VITE_CONVEX_URL='https://tidy-ox-557.convex.cloud'
+export CONVEX_DEPLOYMENT='prod:tidy-ox-557'
+# Set this only to the confirmed public site origin; otherwise existing default is afrinnet.org.
+export VITE_SITE_URL='https://afrinnet.org'
 npm run build:production
 ```
 
-`build:production` refuses test Clerk keys, non-HTTPS/non-Convex URLs, and the same Convex URL found in the local development configuration. The regular `npm run build` remains available for development and does not provide these production safeguards.
+`build:production` requires the production Clerk key, exact Convex URL, and deployment selector to agree. It compiles the frontend and then queries the deployed CMS sitemap function to include published, indexable CMS routes. It fails if the backend query cannot be reached. The regular `npm run build` is for development only.
 
 The required verification before upload is:
 
@@ -68,14 +63,26 @@ The required verification before upload is:
 - `dist/.htaccess` exists (the hidden file is required for direct route loads and refreshes under Apache).
 - The `VITE_CONVEX_URL` is the production URL and the key is from the production Clerk instance.
 
-### 4. Upload to DirectAdmin
+### 4. Configure optional operational email notifications
+
+The app supports Resend notifications after an enquiry, innovation submission, or new newsletter signup is saved. Set these **Convex production environment variables** on `tidy-ox-557`:
+
+- `RESEND_API_KEY`: Resend API key (keep it in Convex, never in the frontend or Git).
+- `AFRINNET_NOTIFICATION_EMAIL`: team inbox for submission alerts.
+- `AFRINNET_FROM_EMAIL`: sender address verified in Resend.
+- `AFRINNET_SITE_URL`: confirmed HTTPS website origin used in CMS alert links.
+- `AFRINNET_CONVEX_SITE_URL`: HTTPS Convex HTTP Actions origin, normally `https://tidy-ox-557.convex.site`, used for one-click unsubscribe.
+
+If these values are absent or delivery fails, the record is still saved in Convex, the submitter is told the alert was not sent, and the failure is logged. Test with an approved recipient before launch. Newsletter campaign delivery is not implemented. When Resend is configured, signup confirmation email includes an unsubscribe link and advertises the Convex one-click unsubscribe endpoint; users can also request removal through the contact form.
+
+### 5. Upload to DirectAdmin
 
 1. Back up the current `public_html` contents before replacing anything.
 2. Upload the **contents** of `dist/`, including `.htaccess`, into the intended domain's `public_html/`. Do not upload `.env.local`, source files, or `node_modules`.
 3. Keep the existing DNS configuration unchanged unless a separate DNS change is explicitly requested.
 4. If DirectAdmin's web server does not honor Apache `.htaccess` rewrites, configure its SPA fallback so unknown paths serve `index.html`; otherwise `/cms` may work from a navigation click but fail on direct load or refresh.
 
-### 5. Verify the live cutover
+### 6. Verify the live cutover
 
 Using the final HTTPS website origin:
 
@@ -87,15 +94,15 @@ Using the final HTTPS website origin:
 6. Submit a clearly identified test enquiry, innovation submission, and newsletter signup; confirm each appears in the CMS inbox, then remove the test records.
 7. Test media upload, logo/favicon settings, navigation, page refreshes, and mobile layouts.
 
-Forms currently save to Convex and appear in the CMS inbox. Email notifications are **not** configured; add an email-delivery provider separately if email alerts are required.
+Forms save to Convex and appear in the CMS inbox. Resend alerts and newsletter signup confirmation emails are optional and require the environment variables above. Newsletter campaign emails are not sent by the current application.
 
 ## Data and migration boundaries
 
-- Each Convex deployment has its own database. The live site will not see preview data just because the frontend is uploaded.
+- Each Convex deployment has its own database. Production `tidy-ox-557` must receive the schema/functions before the live frontend uses it.
 - The production importer seeds the built-in content modules from this code, but does not copy authored development edits, form submissions, CMS staff entries, or `_storage` uploads.
 - Uploaded assets and their storage IDs are deployment-specific. Upload required images/videos again in the production CMS, or plan and validate a separate explicit data/storage migration.
-- The current development database contains no enquiry, innovation, or newsletter submissions to migrate. Production had no tables at the readiness check.
-- The production CMS owner allowlist is configured, but its identity and Clerk issuer must be verified before login can work.
+- Previous development data is separate and is not copied by deployment. Do not assume production is empty without checking its dashboard before the first deploy.
+- The production CMS owner ID and Clerk issuer still need to be supplied and verified before login can work.
 
 ## Rollback
 

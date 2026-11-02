@@ -150,6 +150,9 @@ export default function SubmitInnovation() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [reference, setReference] = useState<string | null>(null);
+  const [emailNotice, setEmailNotice] = useState<
+    "sent" | "not_configured" | "failed" | "not_needed"
+  >("not_configured");
 
   /** Save-and-resume: the draft persists on this device only. */
   const persist = (next: DraftState) => {
@@ -252,13 +255,19 @@ export default function SubmitInnovation() {
         consent: true,
       });
       setReference(result.reference);
+      setEmailNotice(result.emailNotice);
       try {
         localStorage.removeItem(DRAFT_KEY);
       } catch {
         /* ignore */
       }
       toast.success("Submission received", {
-        description: `Reference ${result.reference}`,
+        description:
+          result.emailNotice === "sent"
+            ? `Reference ${result.reference}; AFRINNET was notified.`
+            : result.emailNotice === "failed"
+              ? `Reference ${result.reference}; AFRINNET could not be notified by email.`
+              : `Reference ${result.reference}; AFRINNET's notification email is not configured.`,
       });
     } catch (error) {
       setErrors({ form: readError(error) });
@@ -310,6 +319,13 @@ export default function SubmitInnovation() {
                   <span className="font-semibold text-chalk">What happens next:</span>{" "}
                   your submission is checked for completeness. If anything is
                   missing, we will contact you at the email address you provided.
+                </p>
+                <p>
+                  {emailNotice === "sent"
+                    ? "AFRINNET has been notified by email."
+                    : emailNotice === "failed"
+                      ? "Your submission is saved in the website inbox, but AFRINNET could not be notified by email."
+                      : "Your submission is saved in the website inbox, but AFRINNET's email notification is not configured."}
                 </p>
                 <p>
                   Suitable submissions may be routed to IP support, institutional

@@ -1,36 +1,32 @@
 import { spawnSync } from "node:child_process";
 import { loadEnv } from "vite";
+import {
+  defaultSiteUrl,
+  productionDeployment,
+  validateProductionConfig,
+} from "./production-config.mjs";
 
 const root = process.cwd();
 const productionEnv = loadEnv("production", root, "VITE_");
 const developmentEnv = loadEnv("development", root, "VITE_");
 const clerkKey = process.env.VITE_CLERK_PUBLISHABLE_KEY ?? productionEnv.VITE_CLERK_PUBLISHABLE_KEY;
 const convexUrl = process.env.VITE_CONVEX_URL ?? productionEnv.VITE_CONVEX_URL;
+const siteUrl = process.env.VITE_SITE_URL ?? productionEnv.VITE_SITE_URL ?? defaultSiteUrl;
+const deployment = process.env.CONVEX_DEPLOYMENT;
 
 function fail(message) {
   console.error(`Production build blocked: ${message}`);
   process.exit(1);
 }
 
-if (!clerkKey?.startsWith("pk_live_")) {
-  fail("set VITE_CLERK_PUBLISHABLE_KEY to the production Clerk publishable key (pk_live_...).");
-}
-
-let productionUrl;
-try {
-  productionUrl = new URL(convexUrl);
-} catch {
-  fail("set VITE_CONVEX_URL to the production Convex deployment URL.");
-}
-
-if (productionUrl.protocol !== "https:" || !productionUrl.hostname.endsWith(".convex.cloud")) {
-  fail("VITE_CONVEX_URL must be an HTTPS Convex cloud URL.");
-}
-
-const developmentUrl = developmentEnv.VITE_CONVEX_URL;
-if (developmentUrl && new URL(developmentUrl).origin === productionUrl.origin) {
-  fail("VITE_CONVEX_URL still points to the local development deployment.");
-}
+const configurationError = validateProductionConfig({
+  clerkKey,
+  convexUrl,
+  developmentUrl: developmentEnv.VITE_CONVEX_URL,
+  deployment,
+  siteUrl,
+});
+if (configurationError) fail(configurationError);
 
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 const result = spawnSync(npm, ["run", "build"], {
@@ -39,7 +35,9 @@ const result = spawnSync(npm, ["run", "build"], {
   env: {
     ...process.env,
     VITE_CLERK_PUBLISHABLE_KEY: clerkKey,
-    VITE_CONVEX_URL: productionUrl.origin,
+    VITE_CONVEX_URL: new URL(convexUrl).origin,
+    VITE_SITE_URL: new URL(siteUrl).origin,
+    CONVEX_DEPLOYMENT: productionDeployment,
   },
 });
 
@@ -47,4 +45,19 @@ if (result.error) {
   console.error("Production build failed to start:", result.error.message);
   process.exit(1);
 }
-process.exit(result.status ?? 1);
+if (result.status !== 0) process.exit(result.status ?? 1);
+
+const sitemap = spawnSync(process.execPath, ["scripts/generate-sitemap.mjs"], {
+  cwd: root,
+  stdio: "inherit",
+  env: {
+    ...process.env,
+    VITE_CONVEX_URL: new URL(convexUrl).origin,
+    VITE_SITE_URL: new URL(siteUrl).origin,
+  },
+});
+if (sitemap.error) {
+  console.error("Production sitemap generation failed to start:", sitemap.error.message);
+  process.exit(1);
+}
+process.exit(sitemap.status ?? 1);

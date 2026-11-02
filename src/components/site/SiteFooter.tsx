@@ -22,9 +22,17 @@ function NewsletterForm() {
     if (status === "loading") return;
     setStatus("loading");
     try {
-      await subscribeNewsletter({ email, consent });
+      const result = await subscribeNewsletter({ email, consent });
       setStatus("success");
-      setMessage("Thank you — you're on the list for AFRINNET updates.");
+      setMessage(
+        result.confirmationEmail === "sent"
+          ? "Your signup is saved. A confirmation email with an unsubscribe link has been sent. Newsletter campaigns are not being sent yet."
+          : result.confirmationEmail === "not_needed"
+            ? "You are already on the updates list. Your existing unsubscribe link remains valid. Newsletter campaigns are not being sent yet."
+            : result.confirmationEmail === "failed"
+              ? "Your signup is saved, but no confirmation email was sent. Contact AFRINNET if you need to unsubscribe."
+              : "Your signup is saved, but confirmation email is not configured. Contact AFRINNET if you need to unsubscribe.",
+      );
       setEmail("");
       setConsent(false);
     } catch (error) {
@@ -80,9 +88,10 @@ function NewsletterForm() {
           className="mt-0.5 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#16A34A]"
         />
         <span>
-          I agree that AFRINNET Foundation may use my email address to send
-          occasional updates about services, resources and opportunities. I can
-          unsubscribe at any time. See our{" "}
+          I agree that AFRINNET Foundation may use my email address for
+          occasional updates about services, resources and opportunities. I
+          can use the unsubscribe link in the confirmation email or request
+          removal through the contact form. See our{" "}
           <Link to="/privacy" className="text-innovation underline-offset-4 hover:underline">
             privacy policy
           </Link>

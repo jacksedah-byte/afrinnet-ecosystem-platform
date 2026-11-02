@@ -1,16 +1,16 @@
 import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 
 /**
- * Thin wrappers around the public intake mutations.
+ * Thin wrappers around public intake actions.
  *
- * These are create-only endpoints with server-side validation — there is no
- * public read path. Review queues arrive with the registry module.
+ * They save validated records first, then report whether email notifications
+ * were delivered. The client never receives submitted records back.
  */
 export function useIntake() {
-  const submitInnovation = useMutation(api.intake.submitInnovation);
-  const sendEnquiry = useMutation(api.intake.sendEnquiry);
-  const subscribeNewsletter = useMutation(api.intake.subscribeNewsletter);
+  const submitInnovation = useAction(api.intakeActions.submitInnovation);
+  const sendEnquiry = useAction(api.intakeActions.sendEnquiry);
+  const subscribeNewsletter = useAction(api.intakeActions.subscribeNewsletter);
 
   /** Convex surfaces validation failures as Error messages. */
   const readError = (error: unknown) =>

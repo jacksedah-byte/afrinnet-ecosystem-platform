@@ -1,5 +1,5 @@
 {
-  "name": "vite-template",
+  "name": "afrinnet-ecosystem-platform",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "convex codegen && tsc -b && vite build",
     "build:production": "node scripts/build-production.mjs",
+    "test": "node --test scripts/*.test.mjs",
     "lint": "eslint .",
     "convex:dev": "convex dev",
     "convex:codegen": "convex codegen",

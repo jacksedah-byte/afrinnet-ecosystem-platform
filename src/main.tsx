@@ -9,7 +9,7 @@ import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import React, { StrictMode, useEffect, lazy, Suspense } from "react";
+import React, { StrictMode, useEffect, useMemo, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
 import "./index.css";
@@ -46,6 +46,7 @@ const SubmitInnovation = lazy(() => import("./pages/SubmitInnovation.tsx"));
 const Partnerships = lazy(() => import("./pages/Partnerships.tsx"));
 const Contact = lazy(() => import("./pages/Contact.tsx"));
 const Legal = lazy(() => import("./pages/Legal.tsx"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
@@ -58,46 +59,6 @@ function RouteLoading() {
   );
 }
 
-function CmsPageMetadata({ title, content }: { title: string; content: unknown }) {
-  const page = content && typeof content === "object" && !Array.isArray(content)
-    ? content as { seoTitle?: string; seoDescription?: string; noIndex?: boolean; introduction?: string }
-    : {};
-
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = page.seoTitle?.trim() || title;
-    const changes: Array<{ element: HTMLMetaElement; created: boolean; previous: string | null }> = [];
-    const updateMeta = (name: string, value: string, attribute: "name" | "property" = "name") => {
-      let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${name}"]`);
-      const created = !element;
-      if (!element) {
-        element = document.createElement("meta");
-        element.setAttribute(attribute, name);
-        document.head.append(element);
-      }
-      changes.push({ element, created, previous: element.getAttribute("content") });
-      element.content = value;
-    };
-    const description = page.seoDescription?.trim() || page.introduction?.trim();
-    if (description) {
-      updateMeta("description", description);
-      updateMeta("og:description", description, "property");
-    }
-    if (page.seoTitle?.trim()) updateMeta("og:title", page.seoTitle.trim(), "property");
-    if (page.noIndex) updateMeta("robots", "noindex,nofollow");
-    return () => {
-      document.title = previousTitle;
-      for (const { element, created, previous } of changes) {
-        if (created) element.remove();
-        else if (previous === null) element.removeAttribute("content");
-        else element.content = previous;
-      }
-    };
-  }, [page.introduction, page.noIndex, page.seoDescription, page.seoTitle, title]);
-
-  return null;
-}
-
 /** Wraps every public page with the shared header, footer and scroll manager. */
 function Public({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -108,7 +69,6 @@ function Public({ children }: { children: React.ReactNode }) {
     (content.content as Record<string, unknown>).preserveExistingPage === true;
   return (
     <SiteLayout>
-      {content && <CmsPageMetadata title={content.title} content={content.content} />}
       {content ? (
         <>
           <CmsPageContent title={content.title} content={content.content} />
@@ -132,7 +92,6 @@ function DynamicCmsRoute() {
   }
   return (
     <SiteLayout>
-      <CmsPageMetadata title={content.title} content={content.content} />
       <CmsPageContent title={content.title} content={content.content} />
     </SiteLayout>
   );
@@ -223,12 +182,12 @@ function SetupRequired() {
 function RouteSyncer() {
   const location = useLocation();
   const publishedPage = useQuery(api.cms.getPublishedByPath, { path: location.pathname });
-  const seoTitle = publishedPage?.content &&
-    typeof publishedPage.content === "object" &&
-    !Array.isArray(publishedPage.content) &&
-    typeof (publishedPage.content as Record<string, unknown>).seoTitle === "string"
-      ? (publishedPage.content as Record<string, string>).seoTitle.trim()
-      : "";
+  const pageMetadata = useMemo(() => {
+    const content = publishedPage?.content;
+    return content && typeof content === "object" && !Array.isArray(content)
+      ? (content as Record<string, unknown>)
+      : {};
+  }, [publishedPage?.content]);
   useEffect(() => {
     window.parent.postMessage(
       { type: "iframe-route-change", path: location.pathname },
@@ -247,7 +206,6 @@ function RouteSyncer() {
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
-  // Unique document titles per route for SEO and orientation.
   useEffect(() => {
     const titles: Record<string, string> = {
       "/": "AFRINNET Foundation — African Innovation Network",
@@ -269,9 +227,29 @@ function RouteSyncer() {
       "/partnerships": "Become an Institutional Partner — AFRINNET Foundation",
       "/request-ip-support": "Request IP Support — AFRINNET Foundation",
       "/contact": "Contact — AFRINNET Foundation",
+      "/unsubscribe": "Newsletter preferences — AFRINNET Foundation",
       "/privacy": "Privacy Policy — AFRINNET Foundation",
       "/terms": "Terms of Use — AFRINNET Foundation",
       "/accessibility": "Accessibility Statement — AFRINNET Foundation",
+    };
+    const descriptions: Record<string, string> = {
+      "/": "AFRINNET Foundation strengthens Africa's innovation ecosystem by connecting innovators and institutions with knowledge, intellectual property support, partnerships and pathways to develop and advance their ideas.",
+      "/about": "Learn about AFRINNET Foundation, its mission, vision and work to strengthen Africa's innovation ecosystem.",
+      "/about/mission-vision": "Explore AFRINNET Foundation's mission, vision and strategy for advancing African innovation.",
+      "/leadership": "Meet AFRINNET Foundation's leadership and explore its governance structure.",
+      "/ecosystem": "Explore AFRINNET's network for discovering, validating and advancing African innovations.",
+      "/ip": "Learn about intellectual property support and guidance available through AFRINNET.",
+      "/knowledge": "Explore AFRINNET's knowledge centre, resources and publications.",
+      "/knowledge/publications": "Browse AFRINNET publications, policy briefs and learning resources.",
+      "/news": "Read the latest news, events and updates from AFRINNET Foundation.",
+      "/submit": "Submit a non-confidential innovation for consideration by AFRINNET Foundation.",
+      "/partnerships": "Explore institutional and development partnerships with AFRINNET Foundation.",
+      "/request-ip-support": "Request guidance on intellectual property and innovation support from AFRINNET.",
+      "/contact": "Contact AFRINNET Foundation with questions, partnership enquiries or requests for support.",
+      "/unsubscribe": "Manage your AFRINNET updates email preferences.",
+      "/privacy": "Read how AFRINNET Foundation collects, stores and uses information submitted through this website.",
+      "/terms": "Read the terms that apply when using the AFRINNET Foundation website and its services.",
+      "/accessibility": "Read AFRINNET Foundation's accessibility statement and how to report a website barrier.",
     };
     const base =
       titles[location.pathname] ??
@@ -282,8 +260,79 @@ function RouteSyncer() {
           : location.pathname.startsWith("/engage/")
             ? "Engage with AFRINNET — AFRINNET Foundation"
             : "AFRINNET Foundation");
-    document.title = seoTitle || base;
-  }, [location.pathname, seoTitle]);
+    const metadata = pageMetadata ?? {};
+    const title =
+      (typeof metadata.seoTitle === "string" && metadata.seoTitle.trim()) ||
+      base;
+    const description =
+      (typeof metadata.seoDescription === "string" &&
+        metadata.seoDescription.trim()) ||
+      (typeof metadata.introduction === "string" &&
+        metadata.introduction.trim()) ||
+      descriptions[location.pathname] ||
+      descriptions["/"];
+    const siteOrigin = new URL(
+      import.meta.env.VITE_SITE_URL || window.location.origin,
+    ).origin;
+    const canonicalUrl = new URL(location.pathname, siteOrigin).toString();
+
+    document.title = title;
+    const updateMeta = (
+      selector: string,
+      attribute: "name" | "property",
+      key: string,
+      value: string,
+    ) => {
+      let element = document.head.querySelector<HTMLMetaElement>(selector);
+      if (!element) {
+        element = document.createElement("meta");
+        element.setAttribute(attribute, key);
+        document.head.append(element);
+      }
+      element.content = value;
+    };
+    const canonical = document.head.querySelector<HTMLLinkElement>(
+      'link[rel="canonical"]',
+    ) ?? document.head.appendChild(document.createElement("link"));
+    canonical.rel = "canonical";
+    canonical.href = canonicalUrl;
+
+    updateMeta('meta[name="description"]', "name", "description", description);
+    updateMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
+    updateMeta('meta[property="og:title"]', "property", "og:title", title);
+    updateMeta(
+      'meta[property="og:description"]',
+      "property",
+      "og:description",
+      description,
+    );
+    updateMeta('meta[name="twitter:title"]', "name", "twitter:title", title);
+    updateMeta(
+      'meta[name="twitter:description"]',
+      "name",
+      "twitter:description",
+      description,
+    );
+    updateMeta(
+      'meta[name="robots"]',
+      "name",
+      "robots",
+      metadata.noIndex === true ||
+        ["/auth", "/cms", "/dashboard", "/unsubscribe"].includes(location.pathname)
+        ? "noindex,nofollow"
+        : "index,follow",
+    );
+
+    const organizationData = document.querySelector<HTMLScriptElement>(
+      'script[type="application/ld+json"]',
+    );
+    if (organizationData) {
+      const structuredData = JSON.parse(organizationData.textContent || "{}");
+      structuredData.url = `${siteOrigin}/`;
+      structuredData.logo = new URL("/logo.svg", siteOrigin).toString();
+      organizationData.textContent = JSON.stringify(structuredData);
+    }
+  }, [location.pathname, pageMetadata]);
 
   return null;
 }
@@ -338,6 +387,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/privacy" element={<Public><Legal doc="privacy" /></Public>} />
               <Route path="/terms" element={<Public><Legal doc="terms" /></Public>} />
               <Route path="/accessibility" element={<Public><Legal doc="accessibility" /></Public>} />
+              <Route path="/unsubscribe" element={<SiteLayout><Unsubscribe /></SiteLayout>} />
 
               {/* Authentication and member portal */}
               <Route

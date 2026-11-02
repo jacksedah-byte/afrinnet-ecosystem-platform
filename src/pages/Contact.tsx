@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Loader2, Mail, MapPin, Send } from "lucide-react";
+import { Loader2, Mail, Send } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Reveal } from "@/components/site/Reveal";
@@ -50,6 +50,7 @@ const PRESET_MAP: Record<string, string> = {
 };
 
 type Status = "idle" | "loading" | "error";
+type EmailNotice = "sent" | "not_configured" | "failed" | "not_needed";
 
 export default function Contact({
   variant = "contact",
@@ -72,6 +73,7 @@ export default function Contact({
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [emailNotice, setEmailNotice] = useState<EmailNotice>("not_configured");
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -92,7 +94,7 @@ export default function Contact({
 
     setStatus("loading");
     try {
-      await sendEnquiry({
+      const result = await sendEnquiry({
         type,
         name: name.trim(),
         email: email.trim(),
@@ -101,9 +103,15 @@ export default function Contact({
         message: message.trim(),
         consent: true,
       });
+      setEmailNotice(result.emailNotice);
       setSent(true);
-      toast.success("Enquiry sent", {
-        description: "Your message has been recorded and routed.",
+      toast.success("Enquiry recorded", {
+        description:
+          result.emailNotice === "sent"
+            ? "Your message was saved and AFRINNET was notified."
+            : result.emailNotice === "failed"
+              ? "Your message was saved, but AFRINNET could not be notified by email."
+              : "Your message was saved, but the AFRINNET notification email is not configured.",
       });
     } catch (error) {
       setStatus("error");
@@ -134,7 +142,7 @@ export default function Contact({
         lede={
           variant === "ip-support"
             ? "Tell us where you are with your innovation and what you need — AFRINNET will help structure the picture, explain the options and refer you to a qualified professional or registration authority where appropriate."
-            : "Choose the enquiry type and your message is routed to the people responsible for it. Every field below is validated before sending."
+            : "Choose the closest enquiry type and your message will be recorded securely for review by the authorised AFRINNET team. Every field is validated before submission."
         }
         tone="navy"
         actions={
@@ -163,12 +171,17 @@ export default function Contact({
                     Your enquiry has been recorded
                   </h2>
                   <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-ash">
-                    It has been routed under{" "}
+                    Your message has been recorded under{" "}
                     <span className="font-semibold text-chalk">
                       {ENQUIRY_TYPES.find((t) => t.id === type)?.label}
                     </span>
-                    . Keep any correspondence in your inbox — we respond from an
-                    AFRINNET address.
+                    . The authorised AFRINNET team can review it in the website
+                    inbox.{" "}
+                    {emailNotice === "sent"
+                      ? "An email notification was sent to AFRINNET."
+                      : emailNotice === "failed"
+                        ? "AFRINNET could not be notified by email."
+                        : "An email notification was not configured."}
                   </p>
                   <div className="mt-6 flex flex-wrap justify-center gap-3">
                     <LinkButton href="/" variant="outline">
@@ -189,8 +202,8 @@ export default function Contact({
                       1. What is your enquiry about?
                     </legend>
                     <p className="mt-1.5 text-sm text-ash">
-                      Select the closest match — it determines who receives your
-                      message.
+                      Select the closest match so the authorised team can
+                      classify your message for review.
                     </p>
                     <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
                       {ENQUIRY_TYPES.map((option) => (
@@ -365,10 +378,6 @@ export default function Contact({
                       </a>
                     ) : footerNotes.contact}
                   </p>
-                  <p className="flex gap-3">
-                    <MapPin className="mt-1 size-4 shrink-0 text-innovation" aria-hidden="true" />
-                    Postal address will be published once verified.
-                  </p>
                 </div>
                 <div className="mt-5 border-t border-white/10 pt-4">
                   <p className="text-xs leading-5 text-ash/70">{footerNotes.social}</p>
@@ -376,9 +385,10 @@ export default function Contact({
               </Reveal>
 
               <Callout tone="navy" title="How enquiries are handled">
-                Every submission is routed by enquiry type to the team
-                responsible. Enquiries are stored securely and used only to
-                respond — they are never published or shared publicly.
+                Enquiries are saved in the restricted website inbox and
+                classified by the type you select. An email alert is sent to
+                AFRINNET only when the notification service is configured.
+                Enquiries are never published publicly.
               </Callout>
 
               <Callout tone="green" title="Looking for something specific?">

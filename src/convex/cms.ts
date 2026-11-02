@@ -380,6 +380,33 @@ export const getPublishedByPath = query({
   },
 });
 
+export const sitemapEntries = query({
+  args: {},
+  handler: async (ctx) => {
+    const records = await Promise.all(
+      ["page", "news", "resource"].map((type) =>
+        ctx.db
+          .query("siteContent")
+          .withIndex("by_type_status", (q) =>
+            q.eq("type", type).eq("status", "published"),
+          )
+          .collect(),
+      ),
+    );
+    return records.flatMap((group) =>
+      group.flatMap((record) => {
+        if (!record.path) return [];
+        const content =
+          record.content && typeof record.content === "object"
+            ? (record.content as Record<string, unknown>)
+            : {};
+        if (content.noIndex === true) return [];
+        return [{ path: record.path, updatedAt: record.updatedAt }];
+      }),
+    );
+  },
+});
+
 export const getStorageUrl = query({
   args: { storageId: v.id("_storage") },
   handler: async (ctx, { storageId }) => await ctx.storage.getUrl(storageId),

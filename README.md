@@ -15,7 +15,7 @@ This project uses the following tech stack:
 
 All relevant files live in the 'src' directory.
 
-Use bun for the package manager.
+Use npm for the package manager; CI and the committed `package-lock.json` use npm.
 
 ## Setup
 
@@ -23,9 +23,9 @@ Link a Convex development deployment before building. Convex API types are gener
 
 ## DirectAdmin deployment
 
-This repository builds a static Vite single-page application. Follow the [production cutover handover](./DEPLOYMENT_HANDOVER.md) before building or uploading. Use `npm run build:production` to reject test Clerk keys and a Convex URL matching the local development deployment. Upload the contents of `dist/` (including the hidden `.htaccess` file) into the domain's `public_html/` directory in DirectAdmin. The included Apache rewrite rule serves `index.html` for application routes such as `/cms` when opened directly or refreshed.
+This repository builds a static Vite single-page application. Follow the [production cutover handover](./DEPLOYMENT_HANDOVER.md) before building or uploading. The production build is pinned to Convex production deployment `tidy-ox-557`; set `CONVEX_DEPLOYMENT=prod:tidy-ox-557` and matching production frontend values before running `npm run build:production`. The build does not deploy Convex functions or change DNS. Once the sitemap query has been deployed, it includes published, indexable CMS routes. Set `VITE_SITE_URL` to the confirmed HTTPS website origin; it defaults to the existing `https://afrinnet.org` setting. Upload the contents of `dist/` (including `.htaccess`) into the domain's `public_html/` directory in DirectAdmin.
 
-Vite embeds the Convex URL and Clerk publishable key in the generated frontend. Never upload a build made with development service values. Deploy the Convex functions and configure the production Clerk issuer and CMS admin allowlist on the matching production Convex deployment before testing live sign-in.
+Vite embeds the Convex URL and Clerk publishable key in the generated frontend. Never upload a build made with development service values. Deploy the Convex functions and configure the production Clerk issuer and CMS admin allowlist on `tidy-ox-557` before building or testing live sign-in.
 
 ## Environment Variables
 
@@ -54,7 +54,7 @@ The visual page builder can be used to add a CMS design over any route in the ex
 
 The homepage editor can reorder, hide, restore, or re-add its existing major sections and create custom text sections; its existing copy, links, lists, and image fields are edited in the structured field editor. New CMS pages can be added to the main navigation through the visual navigation settings. Bespoke page layouts, forms, and other application interactions remain implemented by their React route components unless a CMS page override is intentionally published in their place; keep the preserve-existing-page option enabled to retain those interactions.
 
-Site settings include visual controls for the site name, description, tagline, announcement bar, contact email, logo, favicon, and primary/background/surface colors. Uploaded assets are stored in Convex and can be removed from the settings editor. A configured contact email is rendered as a `mailto:` link in the footer and Contact page; contact form messages continue to be stored in the CMS inbox and require a separately configured email delivery service for notifications.
+Site settings include visual controls for the site name, description, tagline, announcement bar, contact email, logo, favicon, and primary/background/surface colors. Uploaded assets are stored in Convex and can be removed from the settings editor. A configured contact email is rendered as a `mailto:` link in the footer and Contact page. Enquiries, innovation submissions, and newsletter signups are saved in the CMS inbox; public enquiries and innovation submissions are limited to three per email address per hour. This is not IP-based bot protection; configure a CAPTCHA before high-volume public promotion. Optional Resend notifications require `RESEND_API_KEY`, `AFRINNET_NOTIFICATION_EMAIL`, and `AFRINNET_FROM_EMAIL` on the Convex deployment. The notification outcome is reported to the submitter. Newsletter campaign delivery is not implemented; subscribers can request removal via the contact form, and authorised staff remove the record in the CMS. No automatic data-retention schedule is configured.
 
 Imported content modules are editable through structured nested fields, list controls, image upload fields, and an advanced JSON editor. This includes leadership portraits and image fields used by the existing site components. Save records as drafts while reviewing; publish a record to make the changes active. The CMS header includes links back to the website and sign-out.
 

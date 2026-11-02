@@ -24,7 +24,7 @@ const DOCS: Record<
         heading: "Who we are",
         paragraphs: [
           "AFRINNET Foundation (the African Foundation for Innovation Network) operates this website. This policy explains how we handle personal information collected through the site's forms.",
-          "Questions about this policy can be sent through the contact form on this website; verified contact details are published on the contact page once confirmed.",
+          "Questions or requests about your personal information can be sent through the contact form on this website.",
         ],
       },
       {
@@ -33,9 +33,9 @@ const DOCS: Record<
           "We collect only what is needed to respond to you and to operate the services you use:",
         ],
         list: [
-          "Contact enquiries: name, email address, organisation (optional), subject (optional) and your message.",
+          "Contact enquiries: name, email address, organisation (optional), subject (optional), your message and any answers to additional questions shown on a CMS-built form.",
           "Innovation submissions: applicant name, email, role, organisation, institution type, innovation title, non-confidential description, category, development stage, IP position, support needs and any notes about supporting documents.",
-          "Newsletter sign-up: email address and your consent record.",
+          "Newsletter sign-up: email address, consent and signup time.",
           "Account sign-in (portal): email address and authentication tokens required to keep you signed in.",
         ],
       },
@@ -50,31 +50,31 @@ const DOCS: Record<
         heading: "How we use your information",
         paragraphs: ["Your information is used only for the purpose it was provided:"],
         list: [
-          "To respond to your enquiry and route it to the relevant team.",
+          "To make your enquiry or innovation submission available to authorised AFRINNET staff for review and response.",
           "To review your innovation submission for completeness and, where appropriate, to identify suitable support pathways.",
-          "To send the updates you subscribed to — you can unsubscribe at any time.",
-          "To keep basic security and abuse-prevention records.",
+          "To maintain the newsletter list you joined. If confirmation email is configured, it includes a secure unsubscribe link. You can also request removal through the contact form.",
+          "To protect the service, including checking recent submissions to limit repeated requests from the same email address.",
         ],
       },
       {
         heading: "Storage and access",
         paragraphs: [
-          "Submissions and enquiries are stored in a managed cloud database with server-side validation. Innovation submissions and enquiries have no public read path — they are not visible to other visitors, and review access will be restricted to authorised staff with the arrival of the registry module.",
-          "Newsletter sign-ups record your email address and consent only.",
+          "Submissions, enquiries and newsletter sign-ups are stored in Convex. They are not publicly readable. The CMS inbox is available only to the CMS owner and staff accounts granted inbox permission.",
+          "Newsletter sign-ups record your email address, consent and signup time. If operational email is configured, a signup confirmation with an unsubscribe link is sent. AFRINNET newsletter campaigns are not sent by this release.",
           "Draft innovation submissions are saved in your own browser's local storage so you can resume later. Clearing your browser data, or using the “Clear draft” control, removes that local copy.",
         ],
       },
       {
         heading: "Retention and your rights",
         paragraphs: [
-          "We keep information only as long as it is needed for the purpose it was collected for, or as required by applicable law. You may request access to, correction of, or deletion of your personal information at any time by contacting us through this website.",
+          "No automatic retention or deletion schedule is currently configured. Records remain in the CMS until an authorised staff member deletes them. You may request access to, correction of, or deletion of your information through the contact form; requests are handled by authorised staff.",
           "Public disclosure of an innovation record happens only with your explicit consent. Records are private by default.",
         ],
       },
       {
         heading: "Sharing",
         paragraphs: [
-          "We do not sell personal information. Where a referral to an intellectual property professional or registration authority is useful, we will ask before sharing your details with a third party.",
+          "We do not sell personal information. Clerk provides account sign-in and Convex stores website content and form records. Hosting and service providers may process information on AFRINNET's behalf. If configured, Resend delivers operational email alerts to AFRINNET staff; the site does not send newsletter campaigns. Where a referral to an intellectual property professional or registration authority is useful, we will ask before sharing your details with them.",
         ],
       },
       {
@@ -142,7 +142,7 @@ const DOCS: Record<
       {
         heading: "Governing terms",
         paragraphs: [
-          "The registered particulars and governing law applicable to AFRINNET Foundation will be published on this site once confirmed. Questions about these terms can be sent through the contact form.",
+          "These terms do not specify a governing law or the Foundation's registered particulars. They should be reviewed and completed by a qualified adviser after those details are confirmed. Questions can be sent through the contact form.",
         ],
       },
     ],

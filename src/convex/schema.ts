@@ -53,7 +53,9 @@ const schema = defineSchema(
       documentsNote: v.optional(v.string()),
       consent: v.boolean(),
       status: v.string(),
-    }).index("by_reference", ["reference"]),
+    })
+      .index("by_reference", ["reference"])
+      .index("by_applicant_email_created", ["applicantEmail", "createdAt"]),
 
     // Categorized enquiries from the contact / partnership / IP support forms.
     enquiries: defineTable({
@@ -70,14 +72,19 @@ const schema = defineSchema(
       }))),
       consent: v.boolean(),
       status: v.string(),
-    }).index("by_created", ["createdAt"]),
+    })
+      .index("by_created", ["createdAt"])
+      .index("by_email_created", ["email", "createdAt"]),
 
     // Newsletter sign-ups with recorded consent.
     newsletterSignups: defineTable({
       createdAt: v.number(),
       email: v.string(),
       consent: v.boolean(),
-    }).index("by_email", ["email"]),
+      unsubscribeTokenHash: v.optional(v.string()),
+    })
+      .index("by_email", ["email"])
+      .index("by_unsubscribe_token", ["unsubscribeTokenHash"]),
 
     siteContent: defineTable({
       key: v.string(),
