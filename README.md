@@ -21,6 +21,12 @@ Use bun for the package manager.
 
 Link a Convex development deployment before building. Convex API types are generated from the configured deployment and local schema/functions.
 
+## DirectAdmin deployment
+
+This repository builds a static Vite single-page application. Run `npm run build` and upload the contents of `dist/` (including the hidden `.htaccess` file) into the domain's `public_html/` directory in DirectAdmin. The included Apache rewrite rule serves `index.html` for application routes such as `/cms` when opened directly or refreshed.
+
+Set `VITE_CONVEX_URL` and `VITE_CLERK_PUBLISHABLE_KEY` for the intended production services before building; Vite embeds these values in the generated frontend. Do not upload a build made with development service values to the live website. Deploy the Convex functions and configure the production Clerk issuer and CMS admin allowlist on the matching production Convex deployment before testing live sign-in.
+
 ## Environment Variables
 
 The project is set up with project specific CONVEX_DEPLOYMENT and VITE_CONVEX_URL environment variables on the client side.
@@ -36,13 +42,17 @@ The frontend uses Clerk, and `ConvexProviderWithClerk` passes Clerk identity tok
 
 The CMS is available at `/cms`. Add one or more Clerk user IDs to the Convex environment variable `CMS_ADMIN_USER_IDS` (comma-separated) to grant administrator access. Authorization is enforced inside Convex queries and mutations, not only in the page UI.
 
+An allowlisted CMS owner can manage additional staff from the **CMS staff** area. Staff must already have an account in the same Clerk application; adding them here grants or revokes CMS access but does not send a Clerk invitation. Assign a designation, an administrator/editor/read-only viewer/custom role, and specific CMS areas. Staff management remains owner-only, and permission checks are enforced by Convex.
+
 Run `npm run convex:dev` (or the equivalent Bun script) and follow the Convex CLI prompts to link the local workspace. The build generates Convex API types before compiling. Use `npm run convex:deploy` to publish functions and schema changes. Set `CMS_ADMIN_USER_IDS` with `npx convex env set CMS_ADMIN_USER_IDS user_...` after linking the deployment.
 
-CMS records and uploaded raster images are stored in Convex. From `/cms`, use **Import current content** to copy the current About, leadership, services, IP, audience, resource, founder-story and site modules into draft records. Review and publish a module record to make its content active; otherwise the existing bundled copy remains the fallback. The import is idempotent and never overwrites an existing CMS record.
+CMS records and uploaded raster images are stored in Convex. On first admin visit, `/cms` automatically loads the current About, leadership, services, IP, audience, resource, founder-story, site, and site-settings content areas into the CMS. Unchanged built-in content is published so it remains visible on the website; customized drafts are preserved. **Import current content** safely fills any missing areas and activates only unchanged default records. The import is idempotent and never overwrites edited CMS content.
 
-A published record with a website path overrides the page at that path; a published record on a new path is served by the CMS route. The page picker creates an override draft for each existing public route. Page, news, and resource records have a visual editor with live preview, editable headings and copy, add/remove/reorder section controls, reusable section templates, and image upload. Supported blocks are `heading`, `text`, `list`, `image`, `feature`, `quote`, and `cta`.
+A published record with a website path overrides the page at that path; a published record on a new path is served by the CMS route. The page picker opens the shared content area used by an existing route instead of creating a blank replacement. Use **Create page** to build a new CMS route. The CMS workspace has separate overview, pages, website-content, media-library, site-settings, and submissions areas. Page, news, and resource records have a visual editor with a live preview, page-width/alignment/theme controls, and add/remove/reorder section controls. Sections include text, headings, lists, images, videos, feature cards, card grids with selectable icons, statistics, quotes, dividers, and calls to action. Images can be uploaded or selected again from the media library; MP4, WebM, and QuickTime uploads are limited to 20 MB.
 
-Site settings include visual controls for the site name, description, tagline, announcement bar, contact email, logo, and favicon. Uploaded assets are stored in Convex and can be removed from the settings editor. A configured contact email is rendered as a `mailto:` link in the footer and Contact page; contact form messages continue to be stored in the CMS inbox and require a separately configured email delivery service for notifications.
+The homepage editor can reorder, hide, restore, or re-add its existing major sections and create custom text sections; its existing copy, links, lists, and image fields are edited in the structured field editor. New CMS pages can be added to the main navigation through the visual navigation settings.
+
+Site settings include visual controls for the site name, description, tagline, announcement bar, contact email, logo, favicon, and primary/background/surface colors. Uploaded assets are stored in Convex and can be removed from the settings editor. A configured contact email is rendered as a `mailto:` link in the footer and Contact page; contact form messages continue to be stored in the CMS inbox and require a separately configured email delivery service for notifications.
 
 Imported content modules are editable through structured nested fields, list controls, image upload fields, and an advanced JSON editor. This includes leadership portraits and image fields used by the existing site components. Save records as drafts while reviewing; publish a record to make the changes active. The CMS header includes links back to the website and sign-out.
 

@@ -1,16 +1,19 @@
 import { Reveal } from "@/components/site/Reveal";
 import { Callout, Container, SectionHeading } from "@/components/site/primitives";
 import { JourneyTimeline } from "@/components/site/JourneyTimeline";
+import { homepageContent } from "@/content/homepage";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Homepage Section 5 — how AFRINNET works (five-step journey). */
 export function Journey() {
+  const { journey } = useCmsModule("homepage", homepageContent);
   return (
     <section id="journey" className="bg-obsidian py-20 sm:py-28">
       <Container>
         <SectionHeading
-          eyebrow="How AFRINNET works"
-          title="A clear journey from discovery to advancement"
-          lede="Every innovation moves at its own pace. The journey describes the steps involved — not a promise of outcomes."
+          eyebrow={journey.eyebrow}
+          title={journey.title}
+          lede={journey.description}
           align="center"
           className="mb-14"
         />
@@ -18,12 +21,8 @@ export function Journey() {
         <JourneyTimeline />
 
         <Reveal delay={0.1}>
-          <Callout tone="green" title="What submission means" className="mt-12">
-            Submission starts a review — it does not automatically qualify an
-            innovation for registration, funding or commercialisation, and it does
-            not itself establish intellectual property rights. Where an innovation
-            progresses, it does so because the relevant review and connections
-            support it.
+          <Callout tone="green" title={journey.calloutTitle} className="mt-12">
+            {journey.callout}
           </Callout>
         </Reveal>
       </Container>

@@ -2,30 +2,12 @@ import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { Container } from "@/components/site/primitives";
-
-const ROUTES = [
-  {
-    label: "For Institutions",
-    text: "Universities, TVETs, schools, research bodies and public institutions — explore institutional engagement.",
-    cta: "Explore institutional engagement",
-    href: "/partnerships",
-  },
-  {
-    label: "For Innovators",
-    text: "Submit an innovation or ask for guidance on intellectual property and readiness.",
-    cta: "Submit an innovation",
-    href: "/submit",
-  },
-  {
-    label: "For Partners",
-    text: "Development partners, funders and intermediaries — discuss collaboration with AFRINNET.",
-    cta: "Discuss collaboration",
-    href: "/contact?type=partnership",
-  },
-];
+import { homepageContent } from "@/content/homepage";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Homepage Section 10 — green-on-black partnership call to action. */
 export function PartnershipCTA() {
+  const { partnership } = useCmsModule("homepage", homepageContent);
   return (
     <section className="relative overflow-hidden border-t border-innovation/25 bg-obsidian py-24 sm:py-32">
       {/* Restrained animated background lines */}
@@ -41,15 +23,16 @@ export function PartnershipCTA() {
 
       <Container className="relative">
         <Reveal>
-          <p className="afr-eyebrow text-innovation">Partnership</p>
+          <p className="afr-eyebrow text-innovation">{partnership.eyebrow}</p>
           <h2 className="mt-5 max-w-4xl font-display text-4xl font-bold leading-[1.08] tracking-tight text-chalk sm:text-5xl lg:text-[3.6rem]">
-            Stronger innovation ecosystems are built{" "}
-            <span className="text-innovation">together</span>.
+            {partnership.titleLead}{" "}
+            <span className="text-innovation">{partnership.titleHighlight}</span>
+            {partnership.titleTail}
           </h2>
         </Reveal>
 
         <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {ROUTES.map((route, i) => (
+          {partnership.routes.map((route, i) => (
             <Reveal key={route.label} delay={i * 0.1}>
               <div className="flex h-full flex-col rounded-2xl border border-white/12 bg-ink/70 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-innovation/60 sm:p-7">
                 <span className="font-display text-[0.68rem] font-bold uppercase tracking-[0.2em] text-innovation">

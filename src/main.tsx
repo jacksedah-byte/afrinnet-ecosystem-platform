@@ -62,9 +62,18 @@ function RouteLoading() {
 function Public({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const content = useQuery(api.cms.getPublishedByPath, { path: location.pathname });
+  const preserveExistingPage = content?.content !== null &&
+    typeof content?.content === "object" &&
+    !Array.isArray(content.content) &&
+    (content.content as Record<string, unknown>).preserveExistingPage === true;
   return (
     <SiteLayout>
-      {content ? <CmsPageContent title={content.title} content={content.content} /> : children}
+      {content ? (
+        <>
+          <CmsPageContent title={content.title} content={content.content} />
+          {preserveExistingPage && children}
+        </>
+      ) : children}
     </SiteLayout>
   );
 }

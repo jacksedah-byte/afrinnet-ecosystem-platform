@@ -91,6 +91,28 @@ const schema = defineSchema(
       .index("by_path", ["path"])
       .index("by_type_status", ["type", "status"]),
 
+    cmsUsers: defineTable({
+      clerkUserId: v.string(),
+      email: v.optional(v.string()),
+      name: v.optional(v.string()),
+      designation: v.string(),
+      role: v.union(v.literal("admin"), v.literal("editor"), v.literal("viewer"), v.literal("custom")),
+      permissions: v.array(v.union(
+        v.literal("pages"),
+        v.literal("content"),
+        v.literal("media"),
+        v.literal("settings"),
+        v.literal("inbox"),
+      )),
+      active: v.boolean(),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+      createdBy: v.string(),
+      updatedBy: v.string(),
+    })
+      .index("by_clerk_user", ["clerkUserId"])
+      .index("by_email", ["email"]),
+
     // tableName: defineTable({
     //   ...
     //   // table fields

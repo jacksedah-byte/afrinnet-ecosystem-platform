@@ -25,10 +25,19 @@ type Settings = {
   faviconUrl?: string;
   faviconStorageId?: string;
   contactEmail?: string;
+  theme?: {
+    primary?: string;
+    background?: string;
+    surface?: string;
+  };
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function safeColor(value: unknown, fallback: string) {
+  return typeof value === "string" && /^#[0-9a-fA-F]{6}$/.test(value) ? value : fallback;
 }
 
 export function useSiteSettings() {
@@ -45,6 +54,7 @@ export function useSiteSettings() {
     ? (publishedRecord.content as Settings)
     : {};
   const settings = { ...moduleSettings, ...directSettings };
+  const theme = isRecord(settings.theme) ? settings.theme : {};
 
   return {
     announcement: isRecord(settings.announcement)
@@ -71,5 +81,10 @@ export function useSiteSettings() {
     logoUrl: settings.logoUrl ?? "",
     faviconUrl: settings.faviconUrl ?? "",
     contactEmail: settings.contactEmail ?? "",
+    theme: {
+      primary: safeColor(theme.primary, "#16a34a"),
+      background: safeColor(theme.background, "#080b0a"),
+      surface: safeColor(theme.surface, "#101a16"),
+    },
   };
 }

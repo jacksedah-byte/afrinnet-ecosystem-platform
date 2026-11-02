@@ -1,9 +1,12 @@
 import { Reveal } from "@/components/site/Reveal";
 import { Container, SectionHeading, Callout } from "@/components/site/primitives";
 import { ContinentMap } from "@/components/site/ContinentMap";
+import { homepageContent } from "@/content/homepage";
+import { useCmsModule } from "@/hooks/use-cms-module";
 
 /** Homepage Section 7 — Pan-African vision map (no coverage claims). */
 export function PanAfrica() {
+  const { panAfrica } = useCmsModule("homepage", homepageContent);
   return (
     <section className="relative overflow-hidden border-y border-white/10 bg-ink py-20 sm:py-28">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 afr-dot-bg opacity-25" />
@@ -11,17 +14,13 @@ export function PanAfrica() {
         <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
           <div className="lg:sticky lg:top-32">
             <SectionHeading
-              eyebrow="Our pan-African vision"
-              title="Building Connections Across Africa"
-              lede="AFRINNET's ambition is to connect innovation ecosystems across the continent — region by region, institution by institution."
+              eyebrow={panAfrica.eyebrow}
+              title={panAfrica.title}
+              lede={panAfrica.description}
             />
             <Reveal delay={0.1}>
-              <Callout tone="navy" title="On data and coverage" className="mt-6">
-                We do not publish institutional locations, coverage figures or a
-                pan-African footprint that has not been established. This map
-                shows the regions AFRINNET is working to connect; verified
-                institutions, programmes and innovation stories will appear as
-                they are confirmed.
+              <Callout tone="navy" title={panAfrica.calloutTitle} className="mt-6">
+                {panAfrica.callout}
               </Callout>
             </Reveal>
           </div>

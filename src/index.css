@@ -78,6 +78,34 @@
   --sidebar-ring: #16a34a;
 }
 
+.cms-dashboard {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #15803d;
+  --primary-foreground: #ffffff;
+  --secondary: #eef2f6;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #ecfdf5;
+  --accent-foreground: #14532d;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #16a34a;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #15803d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #16a34a;
+}
+
 /* AFRINNET brand palette + typography (extends the block above) */
 @theme {
   --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;

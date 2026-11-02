@@ -10,7 +10,7 @@ import { useSiteSettings } from "@/hooks/use-site-settings";
  */
 export function SiteLayout({ children }: { children: ReactNode }) {
   const { pathname, hash } = useLocation();
-  const { faviconUrl } = useSiteSettings();
+  const { faviconUrl, theme } = useSiteSettings();
 
   useEffect(() => {
     let favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
@@ -21,6 +21,30 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     }
     favicon.href = faviconUrl || "/logo.svg";
   }, [faviconUrl]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const variables: Record<string, string> = {
+      "--primary": theme.primary,
+      "--color-innovation": theme.primary,
+      "--color-innovation-bright": theme.primary,
+      "--background": theme.background,
+      "--color-obsidian": theme.background,
+      "--card": theme.surface,
+      "--color-ink": theme.surface,
+    };
+    const previous = new Map<string, string>();
+    for (const [name, value] of Object.entries(variables)) {
+      previous.set(name, root.style.getPropertyValue(name));
+      root.style.setProperty(name, value);
+    }
+    return () => {
+      for (const [name, value] of previous) {
+        if (value) root.style.setProperty(name, value);
+        else root.style.removeProperty(name);
+      }
+    };
+  }, [theme.background, theme.primary, theme.surface]);
 
   useEffect(() => {
     const reduce =
