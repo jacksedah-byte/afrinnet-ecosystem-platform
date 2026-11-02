@@ -23,12 +23,34 @@ export function SiteHeader() {
   const location = useLocation();
   const { announcement, navGroups, navPlainLinks, primaryCta } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
   const [openGroup, setOpenGroup] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    let previousY = window.scrollY;
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - previousY;
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      setScrolled(currentY > 12);
+
+      if (
+        reduceMotion ||
+        currentY < 80 ||
+        delta < -5 ||
+        headerRef.current?.contains(document.activeElement)
+      ) {
+        setNavHidden(false);
+      } else if (delta > 5 && currentY > 160) {
+        setNavHidden(true);
+      }
+      previousY = currentY;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -60,7 +82,14 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header
+      ref={headerRef}
+      onFocusCapture={() => setNavHidden(false)}
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
+        navHidden && "-translate-y-full",
+      )}
+    >
       {/* Announcement strip — hide when there is no current announcement */}
       {announcement.enabled && (
         <div
@@ -240,11 +269,11 @@ export function SiteHeader() {
             <Button
               asChild
               size="lg"
-              className="afr-primary-cta hidden rounded-full bg-[#121316] font-display font-semibold text-white hover:bg-[#24262b] sm:inline-flex"
+              className="afr-primary-cta hidden rounded-full bg-innovation font-display font-semibold text-obsidian hover:bg-innovation-bright sm:inline-flex"
             >
               <Link to={primaryCta.href}>
                 {primaryCta.label}
-                <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-7 place-items-center rounded-full bg-innovation text-white">
+                <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-7 place-items-center rounded-full bg-[#04130a] text-[#22c55e]">
                   <ArrowRight className="size-4" />
                 </span>
               </Link>
@@ -324,11 +353,11 @@ export function SiteHeader() {
             <Button
               asChild
               size="lg"
-              className="afr-primary-cta w-full rounded-full bg-[#121316] font-display font-semibold text-white hover:bg-[#24262b]"
+              className="afr-primary-cta w-full rounded-full bg-innovation font-display font-semibold text-obsidian hover:bg-innovation-bright"
             >
               <Link to={primaryCta.href}>
                 {primaryCta.label}
-                <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-7 place-items-center rounded-full bg-innovation text-white">
+                <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-7 place-items-center rounded-full bg-[#04130a] text-[#22c55e]">
                   <ArrowRight className="size-4" />
                 </span>
               </Link>

@@ -45,24 +45,24 @@
 /* CHANGE VALUES FOR THEME — AFRINNET Foundation brand tokens */
 :root {
   --radius: 1rem;
-  --background: #e9eaec;
-  --foreground: #121316;
-  --card: #ffffff;
-  --card-foreground: #121316;
-  --popover: #ffffff;
-  --popover-foreground: #121316;
-  --primary: #cc2c24;
-  --primary-foreground: #ffffff;
-  --secondary: #d4d6d8;
-  --secondary-foreground: #121316;
-  --muted: #d4d6d8;
-  --muted-foreground: #555960;
-  --accent: #ffffff;
-  --accent-foreground: #121316;
+  --background: #080b0a;
+  --foreground: #f5f7f5;
+  --card: #101a16;
+  --card-foreground: #f5f7f5;
+  --popover: #101a16;
+  --popover-foreground: #f5f7f5;
+  --primary: #16a34a;
+  --primary-foreground: #04130a;
+  --secondary: #18365b;
+  --secondary-foreground: #f5f7f5;
+  --muted: #141c18;
+  --muted-foreground: #a5aea9;
+  --accent: #16201b;
+  --accent-foreground: #f5f7f5;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: rgba(18, 19, 22, 0.12);
-  --input: rgba(18, 19, 22, 0.2);
-  --ring: #cc2c24;
+  --border: rgba(240, 244, 241, 0.1);
+  --input: rgba(240, 244, 241, 0.2);
+  --ring: #16a34a;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -75,7 +75,7 @@
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: #cc2c24;
+  --sidebar-ring: #16a34a;
 }
 
 .cms-dashboard {
@@ -111,45 +111,21 @@
   --font-display: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
 
-  --color-obsidian: #e9eaec;
-  --color-ink: #d4d6d8;
-  --color-ink-deep: #c8cacf;
-  --color-navy: #d4d6d8;
-  --color-navy-deep: #c8cacf;
-  --color-innovation: #cc2c24;
-  --color-innovation-bright: #b9231c;
-  --color-mist: #e9eaec;
-  --color-chalk: #121316;
-  --color-ash: #555960;
+  --color-obsidian: #080b0a;
+  --color-ink: #101a16;
+  --color-ink-deep: #0b1210;
+  --color-navy: #18365b;
+  --color-navy-deep: #112743;
+  --color-innovation: #16a34a;
+  --color-innovation-bright: #22c55e;
+  --color-mist: #f0f4f1;
+  --color-chalk: #f5f7f5;
+  --color-ash: #a5aea9;
 }
 
 @layer utilities {
-  .afr-public-site [class*="border-white"],
-  .afr-public-site [class*="border-obsidian/"] {
-    border-color: rgba(18, 19, 22, 0.12);
-  }
-
-  .afr-public-site .afr-primary-cta,
-  .afr-public-site .afr-cta-arrow {
-    color: #ffffff;
-  }
-
-  .afr-public-site .afr-primary-cta {
-    background-color: #121316;
-  }
-
-  .afr-public-site .afr-primary-cta:hover {
-    background-color: #24262b;
-  }
-
   .afr-public-site section {
     scroll-margin-top: 6rem;
-  }
-
-  .afr-public-site header > div:last-of-type {
-    border-color: rgba(18, 19, 22, 0.1);
-    background-color: rgba(233, 234, 236, 0.94);
-    backdrop-filter: blur(16px);
   }
 
   .afr-public-site img {
@@ -159,6 +135,86 @@
   .afr-public-site a,
   .afr-public-site button {
     transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .afr-public-site[data-motion-ready="true"] [data-scroll-motion] {
+    transition-property: opacity, translate, clip-path;
+    transition-duration: 680ms, 680ms, 900ms;
+    transition-delay: var(--motion-delay, 0ms);
+    transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+    will-change: opacity, translate;
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion].is-visible {
+    will-change: auto;
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion]:not(.is-visible) {
+    opacity: 0;
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion="up"]:not(.is-visible) {
+    translate: 0 26px;
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion="left"]:not(.is-visible) {
+    translate: -26px 0;
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion="right"]:not(.is-visible) {
+    translate: 26px 0;
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion="image"]:not(.is-visible) {
+    clip-path: circle(0 at 0% 50%);
+  }
+
+  .afr-public-site[data-motion-ready="true"]
+    [data-scroll-motion="image"].is-visible {
+    clip-path: circle(150% at 0% 50%);
+  }
+
+  .afr-public-site [data-parallax] {
+    translate: 0 var(--parallax-y, 0px);
+    scale: 1.06;
+  }
+
+  .afr-public-site main button,
+  .afr-public-site main a[class*="rounded"] {
+    transition:
+      color 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      background-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      translate 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .afr-public-site main button:hover,
+    .afr-public-site main a[class*="rounded"]:hover {
+      translate: 0 -2px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .afr-public-site[data-motion-ready="true"] [data-scroll-motion] {
+    opacity: 1 !important;
+    translate: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+
+  .afr-public-site [data-parallax] {
+    translate: none !important;
+    scale: none !important;
+    will-change: auto;
   }
 }
 
@@ -231,11 +287,11 @@
     text-wrap: pretty;
   }
   ::selection {
-    background: rgba(204, 44, 36, 0.2);
-    color: #121316;
+    background: rgba(22, 163, 74, 0.35);
+    color: #f5f7f5;
   }
   :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid #16a34a;
     outline-offset: 2px;
   }
 }
@@ -248,14 +304,6 @@
     background-image: linear-gradient(rgba(240, 244, 241, 0.045) 1px, transparent 1px),
       linear-gradient(90deg, rgba(240, 244, 241, 0.045) 1px, transparent 1px);
     background-size: 64px 64px;
-  }
-  .afr-public-site [class*="border-white"] {
-    border-color: rgba(18, 19, 22, 0.12);
-  }
-  .afr-public-site .afr-grid-bg {
-    background-image:
-      linear-gradient(rgba(18, 19, 22, 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(18, 19, 22, 0.035) 1px, transparent 1px);
   }
   .afr-dot-bg {
     background-image: radial-gradient(rgba(240, 244, 241, 0.12) 1px, transparent 1px);

@@ -65,7 +65,7 @@ function NewsletterForm() {
         <Button
           type="submit"
           disabled={status === "loading"}
-          className="h-12 rounded-md bg-innovation px-6 font-display font-semibold text-white hover:bg-innovation-bright"
+          className="h-12 rounded-md bg-innovation px-6 font-display font-semibold text-obsidian hover:bg-innovation-bright"
         >
           {status === "loading" && <Loader2 className="size-4 animate-spin" />}
           {status === "loading" ? "Subscribing…" : "Subscribe"}
@@ -77,7 +77,7 @@ function NewsletterForm() {
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#CC2C24]"
+          className="mt-0.5 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#16A34A]"
         />
         <span>
           I agree that AFRINNET Foundation may use my email address to send
@@ -106,12 +106,12 @@ export function SiteFooter() {
       {/* Subtle network texture */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <svg className="afr-mask-fade h-full w-full opacity-[0.16]" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid slice">
-          <g stroke="#CC2C24" strokeWidth="1" fill="none">
+          <g stroke="#16A34A" strokeWidth="1" fill="none">
             <path d="M-20 380 L180 300 L360 350 L560 260 L760 320 L980 240 L1220 300" className="afr-flow" />
             <path d="M-20 180 L220 120 L420 190 L640 110 L860 170 L1080 100 L1220 150" className="afr-flow" opacity="0.6" />
             <path d="M180 300 L220 120 M360 350 L420 190 M560 260 L640 110 M760 320 L860 170 M980 240 L1080 100" opacity="0.5" />
           </g>
-          <g fill="#CC2C24">
+          <g fill="#16A34A">
             {[
               [180, 300],
               [360, 350],

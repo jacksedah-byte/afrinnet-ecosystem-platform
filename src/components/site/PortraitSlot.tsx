@@ -36,12 +36,12 @@ export function PortraitSlot({
               viewBox="0 0 200 250"
               preserveAspectRatio="xMidYMid slice"
             >
-              <g stroke="#CC2C24" strokeWidth="0.8" fill="none" opacity="0.55">
+              <g stroke="#16A34A" strokeWidth="0.8" fill="none" opacity="0.55">
                 <path d="M20 210 L60 150 L110 175 L150 110 L190 140" />
                 <path d="M10 90 L55 60 L105 95 L150 55 L195 80" />
                 <path d="M60 150 L55 60 M110 175 L105 95 M150 110 L150 55" />
               </g>
-              <g fill="#CC2C24">
+              <g fill="#16A34A">
                 {[
                   [60, 150],
                   [110, 175],

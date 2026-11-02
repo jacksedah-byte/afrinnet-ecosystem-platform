@@ -90,7 +90,7 @@ export default function Dashboard() {
             </Button>
             <Button
               onClick={handleSignOut}
-              className="cursor-pointer bg-innovation font-display font-semibold text-white hover:bg-innovation-bright"
+              className="cursor-pointer bg-innovation font-display font-semibold text-obsidian hover:bg-innovation-bright"
             >
               <LogOut className="size-4" />
               Sign out

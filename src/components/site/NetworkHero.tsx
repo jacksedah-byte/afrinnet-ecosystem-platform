@@ -74,20 +74,20 @@ export function NetworkHero() {
       >
         <defs>
           <linearGradient id="hero-line" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#CC2C24" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#555960" stopOpacity="0.35" />
+            <stop offset="0%" stopColor="#16A34A" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#8FB3A0" stopOpacity="0.35" />
           </linearGradient>
           <radialGradient id="hero-node" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#CC2C24" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#CC2C24" stopOpacity="0" />
+            <stop offset="0%" stopColor="#22C55E" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#16A34A" stopOpacity="0" />
           </radialGradient>
         </defs>
 
         {/* Continental silhouette */}
         <path
           d={AFRICA_PATH}
-          fill="rgba(204,44,36,0.035)"
-          stroke={staticMode ? "rgba(85,89,96,0.38)" : "rgba(85,89,96,0.42)"}
+          fill="rgba(22,163,74,0.05)"
+          stroke={staticMode ? "rgba(165,174,169,0.5)" : "rgba(165,174,169,0.55)"}
           strokeWidth="1.5"
           strokeLinejoin="round"
           className={staticMode ? "" : "afr-line"}
@@ -95,15 +95,15 @@ export function NetworkHero() {
         />
         <path
           d={MADAGASCAR_PATH}
-          fill="rgba(204,44,36,0.035)"
-          stroke="rgba(85,89,96,0.38)"
+          fill="rgba(22,163,74,0.05)"
+          stroke="rgba(165,174,169,0.5)"
           strokeWidth="1.5"
           className={staticMode ? "" : "afr-line"}
           style={{ ["--afr-dash" as string]: "300" }}
         />
 
         {/* Real country borders, drawn faintly so the silhouette reads as a proper map */}
-        <g fill="none" stroke="rgba(85,89,96,0.2)" strokeWidth="0.7">
+        <g fill="none" stroke="rgba(165,174,169,0.3)" strokeWidth="0.7">
           {COUNTRIES.map((country) => (
             <path key={country.name} d={country.d} />
           ))}
@@ -138,7 +138,7 @@ export function NetworkHero() {
                     y1={na[1]}
                     x2={nb[0]}
                     y2={nb[1]}
-                    stroke="#CC2C24"
+                    stroke="#22C55E"
                     strokeWidth="1.6"
                     className="afr-flow"
                     style={{ animationDelay: `${i * 0.2}s` }}
@@ -164,7 +164,7 @@ export function NetworkHero() {
                   cx={x}
                   cy={y}
                   r={major ? 3.4 : 2.4}
-                  fill={major ? "#CC2C24" : "#555960"}
+                  fill={major ? "#22C55E" : "#F0F4F1"}
                   opacity={major ? 1 : 0.85}
                 />
                 {major && (
@@ -173,7 +173,7 @@ export function NetworkHero() {
                     cy={y}
                     r="6.5"
                     fill="none"
-                    stroke="#CC2C24"
+                    stroke="#16A34A"
                     strokeWidth="1"
                     className={staticMode ? "" : "afr-pulse"}
                     style={{ animationDelay: `${i * 0.4}s` }}
@@ -192,7 +192,7 @@ export function NetworkHero() {
               cx={x}
               cy={y}
               r="1.6"
-              fill="#555960"
+              fill="#A5AEA9"
               opacity="0.55"
               className={staticMode ? "" : "afr-node"}
               style={{ animationDelay: `${0.2 + i * 0.03}s` }}

@@ -222,24 +222,24 @@ export default function Legal({ doc }: { doc: Doc }) {
       </PageHeader>
 
       {/* Light reading surface for long-form documents */}
-      <section className="bg-mist py-14 text-chalk sm:py-20">
+      <section className="bg-mist py-14 text-obsidian sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl">
             {content.sections.map((section, i) => (
               <Reveal key={section.heading} delay={Math.min(i * 0.04, 0.2)}>
                 <article className="border-b border-obsidian/10 py-8 first:pt-0">
                   <div className="flex items-baseline gap-4">
-                    <span className="font-display text-xs font-bold tracking-[0.18em] text-innovation">
+                    <span className="font-display text-xs font-bold tracking-[0.18em] text-[#12803F]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <h2 className="font-display text-xl font-bold tracking-tight text-chalk sm:text-2xl">
+                    <h2 className="font-display text-xl font-bold tracking-tight text-obsidian sm:text-2xl">
                       {section.heading}
                     </h2>
                   </div>
 
                   <div className="mt-4 space-y-4 pl-0 sm:pl-10">
                     {section.paragraphs?.map((p, pi) => (
-                      <p key={pi} className="text-base leading-7 text-ash">
+                      <p key={pi} className="text-base leading-7 text-obsidian/75">
                         {p}
                       </p>
                     ))}
@@ -248,10 +248,10 @@ export default function Legal({ doc }: { doc: Doc }) {
                         {section.list.map((item) => (
                           <li
                             key={item}
-                            className="flex gap-3 text-base leading-7 text-ash"
+                            className="flex gap-3 text-base leading-7 text-obsidian/75"
                           >
                             <span
-                              className="mt-3 size-1.5 shrink-0 rounded-full bg-innovation"
+                              className="mt-3 size-1.5 shrink-0 rounded-full bg-[#16A34A]"
                               aria-hidden="true"
                             />
                             {item}

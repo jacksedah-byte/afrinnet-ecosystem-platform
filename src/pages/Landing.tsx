@@ -53,7 +53,7 @@ export default function Landing() {
             <Button asChild variant="outline" className="hidden border-white/15 bg-transparent text-chalk hover:border-innovation hover:text-innovation sm:inline-flex">
               <Link to="/auth">Member sign in</Link>
             </Button>
-            <Button asChild className="bg-innovation text-white hover:bg-innovation-bright">
+            <Button asChild className="bg-innovation text-obsidian hover:bg-innovation-bright">
               <Link to="/submit">Get started</Link>
             </Button>
           </div>
@@ -82,7 +82,7 @@ export default function Landing() {
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild size="lg" className="bg-innovation text-white hover:bg-innovation-bright">
+              <Button asChild size="lg" className="bg-innovation text-obsidian hover:bg-innovation-bright">
                 <Link to="/ecosystem" className="inline-flex items-center gap-2">
                   Explore the network
                   <ArrowRight className="size-4" />

@@ -82,9 +82,9 @@ export function useSiteSettings() {
     faviconUrl: settings.faviconUrl ?? "",
     contactEmail: settings.contactEmail ?? "",
     theme: {
-      primary: safeColor(theme.primary, "#cc2c24"),
-      background: safeColor(theme.background, "#e9eaec"),
-      surface: safeColor(theme.surface, "#d4d6d8"),
+      primary: safeColor(theme.primary, "#16a34a"),
+      background: safeColor(theme.background, "#080b0a"),
+      surface: safeColor(theme.surface, "#101a16"),
     },
   };
 }

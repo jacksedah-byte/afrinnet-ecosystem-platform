@@ -82,8 +82,8 @@ export function EcosystemHub() {
         >
           <defs>
             <radialGradient id="hub-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#CC2C24" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#CC2C24" stopOpacity="0" />
+              <stop offset="0%" stopColor="#16A34A" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#16A34A" stopOpacity="0" />
             </radialGradient>
           </defs>
 
@@ -94,7 +94,7 @@ export function EcosystemHub() {
             rx="360"
             ry="215"
             fill="none"
-            stroke="rgba(18,19,22,0.12)"
+            stroke="rgba(240,244,241,0.08)"
             strokeDasharray="4 10"
           />
           <circle cx={HUB.x} cy={HUB.y} r="130" fill="url(#hub-glow)" />
@@ -106,7 +106,7 @@ export function EcosystemHub() {
               y1={HUB.y}
               x2={pos.x}
               y2={pos.y}
-              stroke="#CC2C24"
+              stroke="#22C55E"
               strokeOpacity="0.55"
               strokeWidth="1.5"
               initial={staticMode ? false : { pathLength: 0, opacity: 0 }}
@@ -130,8 +130,8 @@ export function EcosystemHub() {
                 cx={mx}
                 cy={my}
                 r="3.5"
-                fill="#E9EAEC"
-                stroke="#CC2C24"
+                fill="#080B0A"
+                stroke="#22C55E"
                 strokeWidth="1.5"
                 initial={staticMode ? false : { opacity: 0, scale: 0.4 }}
                 whileInView={{ opacity: 1, scale: 1 }}

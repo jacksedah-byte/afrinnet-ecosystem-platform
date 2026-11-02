@@ -48,15 +48,15 @@ export default function IpDetail() {
       />
 
       {/* Purpose — light reading surface for long-form explanation */}
-      <section className="bg-mist py-14 text-chalk sm:py-20">
+      <section className="bg-mist py-14 text-obsidian sm:py-20">
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.3fr_0.7fr] lg:gap-14">
             <div>
               <p className="afr-eyebrow text-[#12803F]">Purpose & scope</p>
-              <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-chalk sm:text-3xl">
+              <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-obsidian sm:text-3xl">
                 What {type.title.toLowerCase()} protection is for
               </h2>
-              <p className="mt-5 text-base leading-8 text-ash">
+              <p className="mt-5 text-base leading-8 text-obsidian/75">
                 {type.purpose}
               </p>
             </div>
@@ -64,11 +64,11 @@ export default function IpDetail() {
             <div className="rounded-2xl border border-obsidian/15 bg-white/60 p-6">
               <div className="flex items-center gap-2.5">
                 <AlertTriangle className="size-4 text-[#12803F]" aria-hidden="true" />
-                <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-chalk">
+                <h3 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-obsidian">
                   Important
                 </h3>
               </div>
-              <p className="mt-3 text-sm leading-6 text-ash">{ipDisclaimer}</p>
+              <p className="mt-3 text-sm leading-6 text-obsidian/75">{ipDisclaimer}</p>
             </div>
           </div>
         </Container>

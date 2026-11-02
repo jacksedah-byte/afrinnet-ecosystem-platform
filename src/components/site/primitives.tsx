@@ -39,12 +39,14 @@ export function SectionHeading({
   lede,
   align = "left",
   className,
+  tone = "light",
 }: {
   eyebrow?: string;
   title: ReactNode;
   lede?: ReactNode;
   align?: "left" | "center";
   className?: string;
+  tone?: "light" | "dark";
 }) {
   return (
     <div
@@ -58,7 +60,7 @@ export function SectionHeading({
       <h2
         className={cn(
           "font-display text-3xl font-bold leading-[1.12] tracking-tight sm:text-4xl lg:text-[2.75rem]",
-          "text-chalk",
+          tone === "light" ? "text-chalk" : "text-obsidian",
         )}
       >
         {title}
@@ -67,7 +69,7 @@ export function SectionHeading({
         <p
           className={cn(
             "mt-5 text-base leading-7 sm:text-lg",
-            "text-ash",
+            tone === "light" ? "text-ash" : "text-obsidian/70",
           )}
         >
           {lede}
@@ -86,13 +88,13 @@ export type LinkButtonVariant = "primary" | "outline" | "soft" | "light";
 
 const linkButtonStyles: Record<LinkButtonVariant, string> = {
   primary:
-    "bg-[#121316] text-white hover:bg-[#24262b] border border-transparent",
+    "bg-innovation text-obsidian hover:bg-innovation-bright border border-transparent",
   outline:
-    "border border-obsidian/25 bg-transparent text-chalk hover:border-innovation hover:bg-innovation/10 hover:text-chalk",
+    "border border-white/25 bg-transparent text-chalk hover:border-innovation hover:bg-innovation/10 hover:text-chalk",
   soft:
     "border border-white/10 bg-white/[0.06] text-chalk hover:border-innovation/60 hover:bg-white/10",
   light:
-    "border border-[#121316]/20 bg-transparent text-chalk hover:border-innovation hover:bg-innovation/10 hover:text-chalk",
+    "border border-obsidian/25 bg-transparent text-obsidian hover:border-innovation hover:bg-innovation/10 hover:text-obsidian",
 };
 
 /** Router-aware button with the AFRINNET variants. */
@@ -126,7 +128,7 @@ export function LinkButton({
       <Link to={href}>
         {children}
         {variant === "primary" && (
-          <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-8 shrink-0 place-items-center rounded-full bg-innovation text-white">
+          <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-8 shrink-0 place-items-center rounded-full bg-[#04130a] text-[#22c55e]">
             <ArrowRight className="size-4" />
           </span>
         )}
@@ -150,7 +152,7 @@ export function StatusBadge({
         tone === "available" &&
           "border-innovation/50 bg-innovation/10 text-innovation",
         tone === "developing" &&
-          "border-[#9DA1A7] bg-[#D4D6D8] text-[#3D4148]",
+          "border-navy/60 bg-navy/25 text-[#9FC0E8]",
         tone === "neutral" && "border-white/15 bg-white/5 text-ash",
       )}
     >
@@ -178,8 +180,8 @@ export function Callout({
         "rounded-xl border p-5 text-sm leading-6",
         tone === "neutral" && "border-white/12 bg-white/[0.03] text-ash",
         tone === "green" && "border-innovation/40 bg-innovation/[0.07] text-chalk",
-        tone === "navy" && "border-[#A8ABB0] bg-[#D4D6D8]/70 text-[#3D4148]",
-        tone === "light" && "border-[#121316]/12 bg-white text-ash",
+        tone === "navy" && "border-[#2C4E7A] bg-navy/30 text-[#D6E3F2]",
+        tone === "light" && "border-obsidian/15 bg-obsidian/[0.04] text-obsidian/80",
         className,
       )}
     >

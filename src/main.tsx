@@ -123,7 +123,13 @@ function DynamicCmsRoute() {
   const location = useLocation();
   const content = useQuery(api.cms.getPublishedByPath, { path: location.pathname });
   if (content === undefined) return <RouteLoading />;
-  if (!content) return <NotFound />;
+  if (!content) {
+    return (
+      <SiteLayout>
+        <NotFound />
+      </SiteLayout>
+    );
+  }
   return (
     <SiteLayout>
       <CmsPageMetadata title={content.title} content={content.content} />
