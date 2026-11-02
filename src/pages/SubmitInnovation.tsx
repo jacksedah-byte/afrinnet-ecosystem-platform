@@ -405,7 +405,7 @@ export default function SubmitInnovation() {
                     <span
                       className={`mx-auto flex size-7 items-center justify-center rounded-full border font-display text-[0.65rem] font-bold ${
                         i < step
-                          ? "border-innovation bg-innovation text-obsidian"
+                          ? "border-innovation bg-innovation text-white"
                           : i === step
                             ? "border-innovation text-innovation"
                             : "border-white/20 text-ash"
@@ -727,7 +727,7 @@ export default function SubmitInnovation() {
                         type="checkbox"
                         checked={state.consent}
                         onChange={(e) => set("consent", e.target.checked)}
-                        className="mt-1 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#16A34A]"
+                        className="mt-1 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#CC2C24]"
                       />
                       <span>
                         I confirm the information above is non-confidential, that
@@ -787,7 +787,7 @@ export default function SubmitInnovation() {
                   <button
                     type="button"
                     onClick={goNext}
-                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-obsidian transition-colors hover:bg-innovation-bright"
+                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-innovation-bright"
                   >
                     Continue
                     <ArrowRight className="size-4" aria-hidden="true" />
@@ -796,7 +796,7 @@ export default function SubmitInnovation() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-obsidian transition-colors hover:bg-innovation-bright disabled:opacity-60"
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-innovation-bright disabled:opacity-60"
                   >
                     {status === "loading" && <Loader2 className="size-4 animate-spin" />}
                     {status === "loading" ? "Submitting…" : "Submit innovation"}

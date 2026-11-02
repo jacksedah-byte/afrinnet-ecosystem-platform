@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -240,9 +240,14 @@ export function SiteHeader() {
             <Button
               asChild
               size="lg"
-              className="hidden bg-innovation font-display font-semibold text-obsidian hover:bg-innovation-bright sm:inline-flex"
+              className="afr-primary-cta hidden rounded-full bg-[#121316] font-display font-semibold text-white hover:bg-[#24262b] sm:inline-flex"
             >
-              <Link to={primaryCta.href}>{primaryCta.label}</Link>
+              <Link to={primaryCta.href}>
+                {primaryCta.label}
+                <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-7 place-items-center rounded-full bg-innovation text-white">
+                  <ArrowRight className="size-4" />
+                </span>
+              </Link>
             </Button>
 
             {/* Mobile / tablet menu */}
@@ -319,9 +324,14 @@ export function SiteHeader() {
             <Button
               asChild
               size="lg"
-              className="w-full bg-innovation font-display font-semibold text-obsidian hover:bg-innovation-bright"
+              className="afr-primary-cta w-full rounded-full bg-[#121316] font-display font-semibold text-white hover:bg-[#24262b]"
             >
-              <Link to={primaryCta.href}>{primaryCta.label}</Link>
+              <Link to={primaryCta.href}>
+                {primaryCta.label}
+                <span aria-hidden="true" className="afr-cta-arrow ml-2 grid size-7 place-items-center rounded-full bg-innovation text-white">
+                  <ArrowRight className="size-4" />
+                </span>
+              </Link>
             </Button>
           </div>
         </SheetContent>

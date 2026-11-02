@@ -20,7 +20,7 @@ export function LogoMark({ className }: { className?: string }) {
         height="38.5"
         rx="10.5"
         fill="#0B1210"
-        stroke="rgba(22,163,74,0.55)"
+        stroke="rgba(204,44,36,0.72)"
         strokeWidth="1.5"
       />
       <path
@@ -31,12 +31,12 @@ export function LogoMark({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M15 23 H25" stroke="#16A34A" strokeWidth="2.2" strokeLinecap="round" />
-      <circle cx="20" cy="10" r="2.6" fill="#16A34A" />
+      <path d="M15 23 H25" stroke="#CC2C24" strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="20" cy="10" r="2.6" fill="#CC2C24" />
       <circle cx="10.5" cy="30.5" r="2.2" fill="#F0F4F1" />
       <circle cx="29.5" cy="30.5" r="2.2" fill="#F0F4F1" />
-      <circle cx="15" cy="23" r="1.4" fill="#16A34A" />
-      <circle cx="25" cy="23" r="1.4" fill="#16A34A" />
+      <circle cx="15" cy="23" r="1.4" fill="#CC2C24" />
+      <circle cx="25" cy="23" r="1.4" fill="#CC2C24" />
     </svg>
   );
 }

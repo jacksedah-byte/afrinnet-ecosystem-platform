@@ -97,11 +97,11 @@ export function KnowledgePreview() {
                   className="absolute -right-6 -top-6 h-40 w-40 opacity-40"
                   viewBox="0 0 100 100"
                 >
-                  <g stroke="#22C55E" strokeWidth="1" fill="none">
+                  <g stroke="#CC2C24" strokeWidth="1" fill="none">
                     <path d="M10 80 L35 55 L60 65 L90 30" />
                     <path d="M10 40 L40 25 L70 45" opacity="0.6" />
                   </g>
-                  <g fill="#22C55E">
+                  <g fill="#CC2C24">
                     <circle cx="35" cy="55" r="2.5" />
                     <circle cx="60" cy="65" r="2.5" />
                     <circle cx="90" cy="30" r="2.5" />

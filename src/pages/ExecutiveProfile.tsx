@@ -43,7 +43,7 @@ export default function ExecutiveProfile() {
           <>
             <a
               href="#focus"
-              className="inline-flex h-10 items-center rounded-md bg-innovation px-6 font-display text-sm font-semibold text-obsidian transition-colors hover:bg-innovation-bright"
+              className="inline-flex h-10 items-center rounded-md bg-innovation px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-innovation-bright"
             >
               Areas of focus
             </a>

@@ -13,7 +13,7 @@ export function PartnershipCTA() {
       {/* Restrained animated background lines */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <svg className="h-full w-full opacity-[0.22]" viewBox="0 0 1200 500" preserveAspectRatio="none">
-          <g stroke="#16A34A" strokeWidth="1" fill="none">
+          <g stroke="#CC2C24" strokeWidth="1" fill="none">
             <path d="M-50 420 C250 340 450 470 750 360 C950 290 1100 350 1250 300" className="afr-flow" />
             <path d="M-50 300 C200 240 500 330 800 230 C1000 170 1120 220 1250 180" className="afr-flow" opacity="0.6" />
             <path d="M-50 140 C300 90 560 180 860 110 C1040 70 1140 110 1250 80" className="afr-flow" opacity="0.35" />

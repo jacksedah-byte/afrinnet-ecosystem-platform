@@ -208,7 +208,7 @@ export default function Contact({
                             value={option.id}
                             checked={type === option.id}
                             onChange={() => setType(option.id)}
-                            className="mt-1 size-4 accent-[#16A34A]"
+                            className="mt-1 size-4 accent-[#CC2C24]"
                           />
                           <span>
                             <span className="block font-display text-sm font-semibold text-chalk">
@@ -319,7 +319,7 @@ export default function Contact({
                       type="checkbox"
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
-                      className="mt-0.5 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#16A34A]"
+                      className="mt-0.5 size-4 shrink-0 rounded border-white/25 bg-transparent accent-[#CC2C24]"
                     />
                     <span>
                       I consent to AFRINNET Foundation storing this information
@@ -340,7 +340,7 @@ export default function Contact({
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-obsidian transition-colors hover:bg-innovation-bright disabled:opacity-60 sm:w-auto"
+                    className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-innovation-bright disabled:opacity-60 sm:w-auto"
                   >
                     {status === "loading" && <Loader2 className="size-4 animate-spin" />}
                     <Send className="size-4" aria-hidden="true" />

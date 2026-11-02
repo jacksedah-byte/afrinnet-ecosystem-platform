@@ -42,8 +42,8 @@ export function ContinentMap() {
                   <path
                     key={country.name}
                     d={country.d}
-                    fill="rgba(24,54,91,0.55)"
-                    stroke="rgba(165,174,169,0.35)"
+                    fill="rgba(85,89,96,0.12)"
+                    stroke="rgba(85,89,96,0.28)"
                     strokeWidth="0.7"
                     strokeLinejoin="round"
                   />
@@ -53,20 +53,20 @@ export function ContinentMap() {
               <path
                 d={AFRICA_PATH}
                 fill="none"
-                stroke="rgba(165,174,169,0.75)"
+                stroke="rgba(85,89,96,0.55)"
                 strokeWidth="1.4"
                 strokeLinejoin="round"
               />
               <path
                 d={MADAGASCAR_PATH}
                 fill="none"
-                stroke="rgba(165,174,169,0.75)"
+                stroke="rgba(85,89,96,0.55)"
                 strokeWidth="1.4"
                 strokeLinejoin="round"
               />
 
               {/* Aspirational connective lines between regions (decorative) */}
-              <g stroke="#16A34A" strokeOpacity="0.45" strokeWidth="1" strokeDasharray="3 7">
+              <g stroke="#CC2C24" strokeOpacity="0.45" strokeWidth="1" strokeDasharray="3 7">
                 <path d="M200.4 102.5 L223.5 248.7" />
                 <path d="M95.7 193.6 L223.5 248.7" />
                 <path d="M223.5 248.7 L322.2 231.4" />
@@ -99,8 +99,8 @@ export function ContinentMap() {
                       cx={region.x}
                       cy={region.y}
                       r={isActive ? 13 : 9}
-                      fill={isActive ? "rgba(22,163,74,0.25)" : "rgba(8,11,10,0.75)"}
-                      stroke={isActive ? "#22C55E" : "rgba(165,174,169,0.7)"}
+                      fill={isActive ? "rgba(204,44,36,0.16)" : "rgba(233,234,236,0.9)"}
+                      stroke={isActive ? "#CC2C24" : "rgba(85,89,96,0.55)"}
                       strokeWidth={isActive ? 2 : 1.2}
                       className="transition-all duration-300"
                     />
@@ -108,7 +108,7 @@ export function ContinentMap() {
                       cx={region.x}
                       cy={region.y}
                       r="3"
-                      fill={isActive ? "#22C55E" : "#A5AEA9"}
+                      fill={isActive ? "#CC2C24" : "#555960"}
                     />
                   </motion.g>
                 );

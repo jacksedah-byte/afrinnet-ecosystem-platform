@@ -34,7 +34,7 @@ export default function NotFound({ embedded = false }: { embedded?: boolean }) {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex h-11 items-center gap-2 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-obsidian transition-colors hover:bg-innovation-bright"
+            className="inline-flex h-11 items-center gap-2 rounded-md bg-innovation px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-innovation-bright"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
             Back to home

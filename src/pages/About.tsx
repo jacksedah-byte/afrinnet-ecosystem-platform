@@ -43,21 +43,21 @@ export default function About() {
       />
 
       {/* Who we are / what we do — light reading surface */}
-      <section className="bg-mist py-16 text-obsidian sm:py-24">
+      <section className="bg-mist py-16 text-chalk sm:py-24">
         <Container>
           <div className="grid gap-10 md:grid-cols-2 md:gap-14">
             {aboutIntro.sections.map((section, i) => (
               <Reveal key={section.title} delay={i * 0.1}>
                 <div>
-                  <p className="afr-eyebrow text-[#12803F]">
+                  <p className="afr-eyebrow text-innovation">
                     {String(i + 1).padStart(2, "0")} — {section.title}
                   </p>
-                  <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-obsidian sm:text-3xl">
+                  <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-chalk sm:text-3xl">
                     {section.title}
                   </h2>
                   <div className="mt-5 space-y-4">
                     {section.paragraphs.map((p) => (
-                      <p key={p.slice(0, 32)} className="text-base leading-7 text-obsidian/75">
+                      <p key={p.slice(0, 32)} className="text-base leading-7 text-ash">
                         {p}
                       </p>
                     ))}
@@ -73,10 +73,10 @@ export default function About() {
               <Reveal key={item.title} delay={i * 0.08}>
                 <div>
                   <GreenRule className="mb-4" />
-                  <h3 className="font-display text-base font-bold tracking-tight text-obsidian">
+                  <h3 className="font-display text-base font-bold tracking-tight text-chalk">
                     {item.title}
                   </h3>
-                  <p className="mt-2.5 text-sm leading-6 text-obsidian/70">
+                  <p className="mt-2.5 text-sm leading-6 text-ash">
                     {item.text}
                   </p>
                 </div>

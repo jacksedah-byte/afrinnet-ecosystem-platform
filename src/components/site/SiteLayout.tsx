@@ -68,10 +68,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   }, [pathname, hash]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-obsidian">
+    <div className="afr-public-site flex min-h-screen flex-col bg-obsidian">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-innovation focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:font-semibold focus:text-obsidian"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-innovation focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:font-semibold focus:text-white"
       >
         Skip to main content
       </a>

@@ -209,6 +209,11 @@ const siteSettingsContent = {
   faviconUrl: "",
   faviconStorageId: "",
   contactEmail: "",
+  theme: {
+    primary: "#cc2c24",
+    background: "#e9eaec",
+    surface: "#d4d6d8",
+  },
 };
 
 function pageTemplate(title: string) {
@@ -1377,9 +1382,9 @@ export default function Cms() {
                           <div><h3 className="text-sm font-semibold">Website color palette</h3><p className="mt-1 text-xs text-muted-foreground">These brand colors are applied to the live website.</p></div>
                           <div className="grid gap-4 sm:grid-cols-2">
                             {[
-                              ["primary", "Primary brand color", "#16a34a"],
-                              ["background", "Website background", "#080b0a"],
-                              ["surface", "Card / surface color", "#101a16"],
+                              ["primary", "Primary brand color", "#cc2c24"],
+                              ["background", "Website background", "#e9eaec"],
+                              ["surface", "Card / surface color", "#d4d6d8"],
                             ].map(([key, label, fallback]) => (
                               <label key={key} className="flex items-center gap-3 rounded-lg border p-3 text-sm font-medium">
                                 <input type="color" aria-label={label} value={typeof theme[key] === "string" && /^#[0-9a-fA-F]{6}$/.test(theme[key] as string) ? theme[key] as string : fallback} onChange={(event) => updateTheme(key, event.target.value)} className="size-10 cursor-pointer rounded border-0 bg-transparent p-0" />
