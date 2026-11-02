@@ -386,9 +386,16 @@ export const getStorageUrl = query({
 });
 
 export const generateUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
-    await requirePermission(ctx, "media", true);
+  args: {
+    purpose: v.union(
+      v.literal("pages"),
+      v.literal("content"),
+      v.literal("media"),
+      v.literal("settings"),
+    ),
+  },
+  handler: async (ctx, { purpose }) => {
+    await requirePermission(ctx, purpose, true);
     return await ctx.storage.generateUploadUrl();
   },
 });

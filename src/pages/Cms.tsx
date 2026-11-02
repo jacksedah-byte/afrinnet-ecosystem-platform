@@ -261,6 +261,7 @@ export default function Cms() {
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [pendingUploadFor, setPendingUploadFor] = useState<string | null>(null);
   const [inboxError, setInboxError] = useState<string | null>(null);
   const [importResult, setImportResult] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
@@ -601,6 +602,14 @@ export default function Cms() {
       });
       setSelectedId(id);
       setSelectedPagePath(editor.path || selectedPagePath);
+      setPendingUploadFor(null);
+      toast.success(
+        editor.type === "media"
+          ? "Media record saved in Convex."
+          : editor.status === "published"
+          ? "Changes saved and published to the website."
+          : "Saved as a draft. Publish it when you are ready for it to appear on the website.",
+      );
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Unable to save this record.");
     } finally {
@@ -655,7 +664,14 @@ export default function Cms() {
     setIsUploading(true);
     setError(null);
     try {
-      const uploadUrl = await createUploadUrl();
+      const purpose = target?.kind === "mediaAsset"
+        ? "media"
+        : target?.kind === "logo" || target?.kind === "favicon" || editor.type === "settings"
+          ? "settings"
+          : ["page", "news", "resource"].includes(editor.type)
+            ? "pages"
+            : "content";
+      const uploadUrl = await createUploadUrl({ purpose });
       const response = await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": file.type },
@@ -663,10 +679,12 @@ export default function Cms() {
       });
       if (!response.ok) throw new Error("File upload failed.");
       const { storageId } = (await response.json()) as { storageId: string };
+      setPendingUploadFor(editor.key);
       const imageUrl = await convex.query(api.cms.getStorageUrl, {
         storageId: storageId as GenericId<"_storage">,
       });
       if (!imageUrl) throw new Error("Could not create a public image URL.");
+      toast.success(`${file.name} uploaded to Convex. Save this record to keep its reference.`);
 
       const page = JSON.parse(editor.content) as Record<string, unknown>;
       if (!page || Array.isArray(page) || typeof page !== "object") {
@@ -1142,7 +1160,7 @@ export default function Cms() {
                       {isDeleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
                     </Button>
                   )}
-                  <Button type="submit" disabled={isSaving}>
+                  <Button type="submit" disabled={isSaving || isUploading}>
                     {isSaving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
                     Save
                   </Button>
@@ -1150,6 +1168,21 @@ export default function Cms() {
               </div>
 
               {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+              {pendingUploadFor === editor.key && (
+                <p role="status" className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
+                  The file is in Convex storage, but this record does not reference it yet. Select <strong>Save</strong> to keep the attachment. If this record is a draft, publish it too before expecting the file to appear on the live website.
+                </p>
+              )}
+              {editor.status === "draft" && (
+                <p role="status" className="text-xs text-muted-foreground">
+                  Drafts save in Convex but are not shown on the public website until you change Status to Published and save again.
+                </p>
+              )}
+              {editor.type === "settings" && editor.status === "draft" && (
+                <p role="status" className="rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-sm">
+                  Site settings saved as a draft are stored in Convex, but the live website ignores draft settings. To activate a logo, favicon, or other setting, change Status to <strong>Published</strong> and save.
+                </p>
+              )}
 
               <div className="grid gap-4 sm:grid-cols-2">
                 {["page", "news", "resource"].includes(editor.type) && (
