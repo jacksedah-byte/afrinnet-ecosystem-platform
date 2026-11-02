@@ -14,7 +14,7 @@ Before production sign-in can work, configure the production Clerk publishable k
 
 ### 1. Deploy the production Convex backend
 
-The public site reads published CMS content when available and otherwise uses the content included in this repository. A blank production deployment is sufficient for the initial public site. The current backend auth configuration keeps Clerk disabled until `CLERK_JWT_ISSUER_DOMAIN` is set; CMS operations remain protected and the public-first frontend disables admin routes.
+The public site reads published CMS content when available and otherwise uses the content included in this repository. A blank production deployment is sufficient for the initial public site. Clerk is intentionally omitted from the first public-only backend deployment; CMS and member-account operations are unavailable in the public-first frontend. Add the Clerk provider to `src/convex/auth.config.ts` and configure its production issuer only when production Clerk is ready.
 
 The current workspace's Convex CLI does not have access to `tidy-ox-557`, so use a production-only deploy key through GitHub Actions:
 
